@@ -18,6 +18,7 @@ import { ShinyText } from "@/components/shiny-text"
 import { SkillDisplay } from "@/components/skill-card"
 import { AnimatedBorder } from "@/components/animated-border"
 import { BorderBeam } from "@/components/border-beam"
+import { VisitCounter } from "@/components/visit-counter"
 
 type AppState = "loading" | "entered"
 
@@ -105,6 +106,9 @@ export default function Portfolio() {
                             <ExternalLinkIcon className="w-4 h-4 text-foreground/70 group-hover:text-foreground transition-colors" />
                           </a>
                         </Magnet>
+                      </div>
+                      <div className="mt-6 flex justify-center">
+                        <VisitCounter />
                       </div>
                     </FadeContent>
                   </GlassPanel>
