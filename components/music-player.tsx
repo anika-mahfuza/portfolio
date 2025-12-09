@@ -162,7 +162,7 @@ export function MusicPlayer({ isActive, onAudioRef }: MusicPlayerProps) {
               <span className="w-0.5 h-2 bg-accent rounded-full animate-pulse" style={{ animationDelay: "450ms" }} />
             </div>
           )}
-          <span className="text-xs text-foreground/70 font-medium">Believer - Imagine Dragons</span>
+          <span className="text-xs text-foreground/70 font-medium">Cure For Me - AURORA</span>
         </div>
       </div>
     </>
