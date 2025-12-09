@@ -40,7 +40,7 @@ export const VideoBackground = forwardRef<VideoBackgroundRef, VideoBackgroundPro
         playsInline
         preload="auto"
       >
-        <source src="https://media.githubusercontent.com/media/anika-mahfuza/portfolio/main/public/background.mp4" type="video/mp4" />
+        <source src="https://github.com/anika-mahfuza/portfolio/raw/main/public/background.mp4" type="video/mp4" />
       </video>
 
       {/* Dark overlay */}
