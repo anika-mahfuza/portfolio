@@ -7,6 +7,16 @@ const nextConfig = {
     unoptimized: true,
   },
   basePath: "/portfolio",
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/portfolio',
+        basePath: false,
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig

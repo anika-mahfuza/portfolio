@@ -14,6 +14,7 @@ import { FadeContent } from "@/components/fade-content"
 import { DecryptedText } from "@/components/decrypted-text"
 import { ClickSpark } from "@/components/click-spark"
 import { MusicPlayer } from "@/components/music-player"
+import { LyricsDisplay } from "@/components/lyrics-display"
 import { ShinyText } from "@/components/shiny-text"
 import { SkillDisplay } from "@/components/skill-card"
 import { AnimatedBorder } from "@/components/animated-border"
@@ -40,6 +41,7 @@ export default function Portfolio() {
         <VideoBackground ref={videoRef} isActive={isEntered} />
         <MusicPlayer isActive={isEntered} onAudioRef={setAudioElement} />
         <AudioControls audioElement={audioElement} isVisible={isEntered} />
+        <LyricsDisplay audioElement={audioElement} isVisible={isEntered} />
 
 
 
