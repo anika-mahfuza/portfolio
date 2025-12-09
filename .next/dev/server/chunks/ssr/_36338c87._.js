@@ -153,11 +153,11 @@ const VideoBackground = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$pro
                 playsInline: true,
                 preload: "auto",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("source", {
-                    src: "/background.mp4",
+                    src: "https://github.com/anika-mahfuza/portfolio/raw/main/public/background.mp4",
                     type: "video/mp4"
                 }, void 0, false, {
                     fileName: "[project]/components/video-background.tsx",
-                    lineNumber: 44,
+                    lineNumber: 43,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
@@ -169,21 +169,21 @@ const VideoBackground = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$pro
                 className: `absolute inset-0 bg-black/50 transition-opacity duration-1000 ${isActive ? "opacity-100" : "opacity-0"}`
             }, void 0, false, {
                 fileName: "[project]/components/video-background.tsx",
-                lineNumber: 48,
+                lineNumber: 47,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: `absolute inset-0 vignette transition-opacity duration-1000 ${isActive ? "opacity-100" : "opacity-0"}`
             }, void 0, false, {
                 fileName: "[project]/components/video-background.tsx",
-                lineNumber: 55,
+                lineNumber: 53,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: `absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30 transition-opacity duration-1000 ${isActive ? "opacity-100" : "opacity-0"}`
             }, void 0, false, {
                 fileName: "[project]/components/video-background.tsx",
-                lineNumber: 62,
+                lineNumber: 59,
                 columnNumber: 7
             }, this)
         ]
@@ -1147,16 +1147,19 @@ const LYRICS_LRC = `
 function MusicPlayer({ isActive, onAudioRef }) {
     const audioRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
     const [isPlaying, setIsPlaying] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    // Pass audio ref to parent immediately after mount, not dependent on isActive
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        if (onAudioRef) {
+        if (onAudioRef && audioRef.current) {
             onAudioRef(audioRef.current);
         }
     }, [
         onAudioRef
     ]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        if (isActive && audioRef.current) {
-            audioRef.current.play().catch(()=>{});
+        const audio = audioRef.current;
+        if (isActive && audio) {
+            // Play immediately when active without delay
+            audio.play().catch(()=>{});
         }
     }, [
         isActive
@@ -1173,7 +1176,6 @@ function MusicPlayer({ isActive, onAudioRef }) {
             audio.removeEventListener("pause", handlePause);
         };
     }, []);
-    if (!isActive) return null;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("audio", {
@@ -1183,10 +1185,10 @@ function MusicPlayer({ isActive, onAudioRef }) {
                 preload: "auto"
             }, void 0, false, {
                 fileName: "[project]/components/music-player.tsx",
-                lineNumber: 152,
+                lineNumber: 153,
                 columnNumber: 7
             }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            isActive && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "fixed right-4 bottom-24 z-30",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "flex items-center gap-3 bg-background/30 backdrop-blur-md rounded-full px-4 py-2 border border-foreground/10",
@@ -1201,8 +1203,8 @@ function MusicPlayer({ isActive, onAudioRef }) {
                                     }
                                 }, void 0, false, {
                                     fileName: "[project]/components/music-player.tsx",
-                                    lineNumber: 159,
-                                    columnNumber: 15
+                                    lineNumber: 161,
+                                    columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                     className: "w-0.5 h-2 bg-accent rounded-full animate-pulse",
@@ -1211,8 +1213,8 @@ function MusicPlayer({ isActive, onAudioRef }) {
                                     }
                                 }, void 0, false, {
                                     fileName: "[project]/components/music-player.tsx",
-                                    lineNumber: 160,
-                                    columnNumber: 15
+                                    lineNumber: 162,
+                                    columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                     className: "w-0.5 h-4 bg-accent rounded-full animate-pulse",
@@ -1221,8 +1223,8 @@ function MusicPlayer({ isActive, onAudioRef }) {
                                     }
                                 }, void 0, false, {
                                     fileName: "[project]/components/music-player.tsx",
-                                    lineNumber: 161,
-                                    columnNumber: 15
+                                    lineNumber: 163,
+                                    columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                     className: "w-0.5 h-2 bg-accent rounded-full animate-pulse",
@@ -1231,33 +1233,33 @@ function MusicPlayer({ isActive, onAudioRef }) {
                                     }
                                 }, void 0, false, {
                                     fileName: "[project]/components/music-player.tsx",
-                                    lineNumber: 162,
-                                    columnNumber: 15
+                                    lineNumber: 164,
+                                    columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/components/music-player.tsx",
-                            lineNumber: 158,
-                            columnNumber: 13
+                            lineNumber: 160,
+                            columnNumber: 15
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                             className: "text-xs text-foreground/70 font-medium",
                             children: "Cure For Me - AURORA"
                         }, void 0, false, {
                             fileName: "[project]/components/music-player.tsx",
-                            lineNumber: 165,
-                            columnNumber: 11
+                            lineNumber: 167,
+                            columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/components/music-player.tsx",
-                    lineNumber: 156,
-                    columnNumber: 9
+                    lineNumber: 158,
+                    columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/music-player.tsx",
-                lineNumber: 155,
-                columnNumber: 7
+                lineNumber: 157,
+                columnNumber: 9
             }, this)
         ]
     }, void 0, true);

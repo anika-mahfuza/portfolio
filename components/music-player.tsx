@@ -116,15 +116,18 @@ export function MusicPlayer({ isActive, onAudioRef }: MusicPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
 
+  // Pass audio ref to parent immediately after mount, not dependent on isActive
   useEffect(() => {
-    if (onAudioRef) {
+    if (onAudioRef && audioRef.current) {
       onAudioRef(audioRef.current)
     }
   }, [onAudioRef])
 
   useEffect(() => {
-    if (isActive && audioRef.current) {
-      audioRef.current.play().catch(() => {})
+    const audio = audioRef.current
+    if (isActive && audio) {
+      // Play immediately when active without delay
+      audio.play().catch(() => { })
     }
   }, [isActive])
 
@@ -144,27 +147,27 @@ export function MusicPlayer({ isActive, onAudioRef }: MusicPlayerProps) {
     }
   }, [])
 
-  if (!isActive) return null
-
   return (
     <>
-      {/* Hidden audio element */}
+      {/* Audio element always exists so volume slider can control it */}
       <audio ref={audioRef} src="/music.mp3" loop preload="auto" />
 
-      {/* Now Playing indicator - Bottom right above volume controls */}
-      <div className="fixed right-4 bottom-24 z-30">
-        <div className="flex items-center gap-3 bg-background/30 backdrop-blur-md rounded-full px-4 py-2 border border-foreground/10">
-          {isPlaying && (
-            <div className="flex items-center gap-0.5">
-              <span className="w-0.5 h-3 bg-accent rounded-full animate-pulse" style={{ animationDelay: "0ms" }} />
-              <span className="w-0.5 h-2 bg-accent rounded-full animate-pulse" style={{ animationDelay: "150ms" }} />
-              <span className="w-0.5 h-4 bg-accent rounded-full animate-pulse" style={{ animationDelay: "300ms" }} />
-              <span className="w-0.5 h-2 bg-accent rounded-full animate-pulse" style={{ animationDelay: "450ms" }} />
-            </div>
-          )}
-          <span className="text-xs text-foreground/70 font-medium">Cure For Me - AURORA</span>
+      {/* Now Playing indicator - Only show when active */}
+      {isActive && (
+        <div className="fixed right-4 bottom-24 z-30">
+          <div className="flex items-center gap-3 bg-background/30 backdrop-blur-md rounded-full px-4 py-2 border border-foreground/10">
+            {isPlaying && (
+              <div className="flex items-center gap-0.5">
+                <span className="w-0.5 h-3 bg-accent rounded-full animate-pulse" style={{ animationDelay: "0ms" }} />
+                <span className="w-0.5 h-2 bg-accent rounded-full animate-pulse" style={{ animationDelay: "150ms" }} />
+                <span className="w-0.5 h-4 bg-accent rounded-full animate-pulse" style={{ animationDelay: "300ms" }} />
+                <span className="w-0.5 h-2 bg-accent rounded-full animate-pulse" style={{ animationDelay: "450ms" }} />
+              </div>
+            )}
+            <span className="text-xs text-foreground/70 font-medium">Cure For Me - AURORA</span>
+          </div>
         </div>
-      </div>
+      )}
     </>
   )
 }
