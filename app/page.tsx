@@ -77,7 +77,7 @@ export default function Portfolio() {
 
                     <FadeContent delay={400} blur>
                       <p className="text-muted-foreground text-sm leading-relaxed mb-6 text-pretty">
-                        Crafting code in the shadows. Developer, reverse engineer, and digital architect.
+                        Crafting code in the shadows. Developer, reverse engineer, and depressed.
                       </p>
                     </FadeContent>
 
@@ -210,10 +210,10 @@ export default function Portfolio() {
                       <GlassPanel className="p-6" showBorder={false}>
                         <SkillDisplay
                           skills={[
-                            { name: "C#", level: "Advanced" },
+                            { name: "C#", level: "Proficient" },
                             { name: "C++", level: "Advanced" },
                             { name: "Python", level: "Advanced" },
-                            { name: "Web", level: "Proficient" },
+                            { name: "Web", level: "Advanced" },
                           ]}
                         />
                       </GlassPanel>
