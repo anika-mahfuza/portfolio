@@ -60,7 +60,7 @@ export default function Portfolio() {
                       <div className="relative mx-auto mb-4 w-32 h-32">
                         <div className="absolute inset-0 rounded-full overflow-hidden">
                           <img
-                            src="/profile.png"
+                            src="/portfolio/profile.png"
                             alt="Anika Mahfuza"
                             className="w-full h-full object-cover rounded-full"
                           />
