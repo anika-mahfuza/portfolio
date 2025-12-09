@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "ANIKA MAHFUZA | Portfolio",
-  description: "MADE WITH LOVEE",
+  description: "MADE WITH LOVE",
   generator: "anyaxd",
   icons: {
     icon: "/profile.png",
