@@ -93,7 +93,7 @@ export function LoadingScreen({ onComplete, isVisible }: LoadingScreenProps) {
               <div className="h-px w-16 bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
               <p className="text-foreground/40 text-[10px] tracking-[0.4em] uppercase font-light">
                 <DecryptedText
-                  text="Initializing Experience"
+                  text="LOADING THE PORTFOLIO"
                   speed={40}
                   revealDelay={300}
                   animateOnView={false}
