@@ -1,11 +1,31 @@
 "use client"
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export function SkillsBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animationRef = useRef<number>(0)
   const timeRef = useRef(0)
+  const [isDarkMode, setIsDarkMode] = useState(true)
+
+  // Detect theme changes
+  useEffect(() => {
+    const checkTheme = () => {
+      const isDark = document.documentElement.classList.contains('dark')
+      setIsDarkMode(isDark)
+    }
+    
+    checkTheme()
+    
+    // Watch for theme changes
+    const observer = new MutationObserver(checkTheme)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    })
+    
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -22,30 +42,20 @@ export function SkillsBackground() {
       }
     `
 
-    // Fragment shader - Energy Matrix effect
+    // Fragment shader - Clean Energy Flow
     const fragmentShaderSource = `
       precision mediump float;
       
       uniform vec2 resolution;
       uniform float time;
+      uniform bool isDark;
       
       #define PI 3.14159265359
       #define RED vec3(0.902, 0.224, 0.275)
-      
-      float random(vec2 st) {
-        return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
-      }
-      
-      float noise(vec2 st) {
-        vec2 i = floor(st);
-        vec2 f = fract(st);
-        float a = random(i);
-        float b = random(i + vec2(1.0, 0.0));
-        float c = random(i + vec2(0.0, 1.0));
-        float d = random(i + vec2(1.0, 1.0));
-        vec2 u = f * f * (3.0 - 2.0 * f);
-        return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
-      }
+      #define DARK_RED vec3(0.7, 0.15, 0.2)
+      #define LIGHT_RED vec3(1.0, 0.5, 0.5)
+      #define WARM_CORAL vec3(1.0, 0.6, 0.55)
+      #define SOFT_PEACH vec3(1.0, 0.75, 0.7)
       
       void main() {
         vec2 uv = gl_FragCoord.xy / resolution;
@@ -54,44 +64,57 @@ export function SkillsBackground() {
         // Create flowing energy effect
         float energy = 0.0;
         
-        // Multiple wave layers
-        for(float i = 1.0; i <= 4.0; i++) {
-          float wave = sin(uv.x * 8.0 * i + time * 0.3 + uv.y * 4.0) * 0.5 + 0.5;
-          wave *= sin(uv.y * 6.0 * i - time * 0.2) * 0.5 + 0.5;
-          energy += wave * 0.15 / i;
+        // Multiple wave layers - more pronounced
+        for(float i = 1.0; i <= 3.0; i++) {
+          float wave = sin(uv.x * 6.0 * i + time * 0.25 + uv.y * 3.0) * 0.5 + 0.5;
+          wave *= sin(uv.y * 5.0 * i - time * 0.18 + uv.x * 2.0) * 0.5 + 0.5;
+          energy += wave * 0.25 / i;
         }
         
-        // Add flowing lines
-        float line1 = smoothstep(0.48, 0.5, sin(uv.y * 20.0 + time * 0.4)) * 
-                      smoothstep(0.5, 0.52, sin(uv.y * 20.0 + time * 0.4));
-        float line2 = smoothstep(0.48, 0.5, sin(uv.x * 15.0 - time * 0.3)) * 
-                      smoothstep(0.5, 0.52, sin(uv.x * 15.0 - time * 0.3));
+        // Add flowing lines - thicker and more visible
+        float line1 = smoothstep(0.35, 0.5, sin(uv.y * 12.0 + time * 0.35)) * 
+                      smoothstep(0.65, 0.5, sin(uv.y * 12.0 + time * 0.35));
+        float line2 = smoothstep(0.35, 0.5, sin(uv.x * 10.0 - time * 0.28)) * 
+                      smoothstep(0.65, 0.5, sin(uv.x * 10.0 - time * 0.28));
+        float line3 = smoothstep(0.4, 0.5, sin((uv.x + uv.y) * 8.0 + time * 0.22)) * 
+                      smoothstep(0.6, 0.5, sin((uv.x + uv.y) * 8.0 + time * 0.22));
         
-        energy += line1 * 0.1 + line2 * 0.1;
+        energy += line1 * 0.15 + line2 * 0.15 + line3 * 0.12;
         
-        // Add subtle grid
-        float gridX = smoothstep(0.98, 1.0, abs(sin(uv.x * 30.0)));
-        float gridY = smoothstep(0.98, 1.0, abs(sin(uv.y * 20.0)));
-        float grid = max(gridX, gridY) * 0.03;
+        // Add visible but subtle grid
+        float gridX = smoothstep(0.96, 1.0, abs(sin(uv.x * 20.0)));
+        float gridY = smoothstep(0.96, 1.0, abs(sin(uv.y * 15.0)));
+        float grid = max(gridX, gridY) * 0.08;
         
         energy += grid;
         
-        // Vignette to keep focus on center
-        float vignette = 1.0 - length((uv - center) * 1.2);
-        vignette = smoothstep(0.0, 0.7, vignette);
+        // Softer vignette to show more of the effect
+        float vignette = 1.0 - length((uv - center) * 0.9);
+        vignette = smoothstep(0.1, 0.8, vignette);
         
-        // Combine
-        vec3 color = RED * energy * vignette * 0.15;
+        // Choose color based on theme
+        vec3 color;
+        if (isDark) {
+          color = RED * energy * vignette * 0.35;
+        } else {
+          // Warm coral/peach tones for light mode
+          color = WARM_CORAL * energy * vignette * 0.25;
+          color += SOFT_PEACH * energy * vignette * 0.15;
+        }
         
-        // Add subtle glow spots
+        // Add soft pulse spots - no glow, just soft circles
         for(float i = 0.0; i < 3.0; i++) {
           vec2 point = vec2(
-            0.2 + 0.6 * sin(time * 0.15 + i * 2.0),
-            0.3 + 0.4 * cos(time * 0.12 + i * 1.5)
+            0.2 + 0.6 * sin(time * 0.12 + i * 2.1),
+            0.25 + 0.5 * cos(time * 0.1 + i * 1.7)
           );
           float dist = length(uv - point);
-          float glow = smoothstep(0.3, 0.0, dist) * 0.08;
-          color += RED * glow * vignette;
+          float pulse = smoothstep(0.35, 0.0, dist) * 0.15;
+          if (isDark) {
+            color += RED * pulse * vignette * 0.6;
+          } else {
+            color += SOFT_PEACH * pulse * vignette * 0.3;
+          }
         }
         
         gl_FragColor = vec4(color, 1.0);
@@ -140,6 +163,7 @@ export function SkillsBackground() {
     // Get uniform locations
     const resolutionLocation = gl.getUniformLocation(program, 'resolution')
     const timeLocation = gl.getUniformLocation(program, 'time')
+    const isDarkLocation = gl.getUniformLocation(program, 'isDark')
 
     // Resize function
     const resize = () => {
@@ -161,6 +185,7 @@ export function SkillsBackground() {
       timeRef.current += deltaTime
       
       gl.uniform1f(timeLocation, timeRef.current)
+      gl.uniform1i(isDarkLocation, isDarkMode ? 1 : 0)
       gl.drawArrays(gl.TRIANGLES, 0, 6)
       
       animationRef.current = requestAnimationFrame(animate)
@@ -176,15 +201,15 @@ export function SkillsBackground() {
       gl.deleteShader(fragmentShader)
       gl.deleteBuffer(buffer)
     }
-  }, [])
+  }, [isDarkMode])
 
   return (
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-none"
       style={{
-        opacity: 0.6,
-        mixBlendMode: 'screen'
+        opacity: isDarkMode ? 0.85 : 0.35,
+        mixBlendMode: isDarkMode ? 'screen' : 'normal'
       }}
     />
   )
