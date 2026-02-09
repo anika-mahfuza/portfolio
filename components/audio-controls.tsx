@@ -43,7 +43,7 @@ export function AudioControls({ audioElement, isVisible }: AudioControlsProps) {
 
   return (
     <div
-      className="fixed bottom-6 right-6 z-40 flex items-center gap-3"
+      className="fixed bottom-8 right-8 z-[60] flex items-center gap-3"
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
@@ -67,13 +67,13 @@ export function AudioControls({ audioElement, isVisible }: AudioControlsProps) {
       {/* Mute button */}
       <button
         onClick={toggleMute}
-        className="glass w-12 h-12 rounded-full flex items-center justify-center hover:bg-foreground/10 transition-colors group"
+        className="w-11 h-11 flex items-center justify-center bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--foreground-muted)] transition-colors duration-300"
         aria-label={isMuted ? "Unmute" : "Mute"}
       >
         <VolumeIcon
           muted={isMuted}
           volume={volume}
-          className="w-5 h-5 text-foreground/70 group-hover:text-foreground transition-colors"
+          className="w-4 h-4 text-[var(--foreground-muted)]"
         />
       </button>
     </div>

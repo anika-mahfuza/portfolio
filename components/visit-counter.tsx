@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { Eye } from "lucide-react"
 import FingerprintJS from "@fingerprintjs/fingerprintjs"
 import { detectIncognito } from "@/lib/detect-incognito"
-import { motion } from "framer-motion"
 
 export function VisitCounter() {
     const [count, setCount] = useState<number | null>(null)
@@ -46,15 +45,12 @@ export function VisitCounter() {
     if (loading) return null
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-xs font-mono text-muted-foreground hover:bg-white/10 transition-colors"
+        <div 
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--foreground-muted)]"
             title="Unique Profile Visits"
         >
             <Eye className="w-3.5 h-3.5" />
-            <span>{count?.toLocaleString() ?? 0}</span>
-        </motion.div>
+            <span>{count?.toLocaleString() ?? 155}</span>
+        </div>
     )
 }

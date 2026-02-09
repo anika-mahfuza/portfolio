@@ -1,291 +1,434 @@
 "use client"
 
-import { useState, useRef } from "react"
-import { LoadingScreen } from "@/components/loading-screen"
-import { VideoBackground, type VideoBackgroundRef } from "@/components/video-background"
-import { AudioControls } from "@/components/audio-controls"
-import { GlassPanel } from "@/components/glass-panel"
-import { DiscordIcon, ExternalLinkIcon } from "@/components/custom-icons"
-import { Magnet } from "@/components/magnet"
-import { Spotlight } from "@/components/spotlight"
-import { GlitchText } from "@/components/glitch-text"
-import { TiltCard } from "@/components/tilt-card"
-import { FadeContent } from "@/components/fade-content"
-import { DecryptedText } from "@/components/decrypted-text"
-import { ClickSpark } from "@/components/click-spark"
+import { useState, useEffect } from "react"
+import { motion, useScroll, useTransform } from "framer-motion"
+import { useTheme } from "next-themes"
 import { MusicPlayer } from "@/components/music-player"
 import { LyricsDisplay } from "@/components/lyrics-display"
-import { ShinyText } from "@/components/shiny-text"
-import { SkillDisplay } from "@/components/skill-card"
-import { AnimatedBorder } from "@/components/animated-border"
-import { BorderBeam } from "@/components/border-beam"
+import { AudioControls } from "@/components/audio-controls"
+import { DiscordIcon, ExternalLinkIcon } from "@/components/custom-icons"
 import { VisitCounter } from "@/components/visit-counter"
-
-type AppState = "loading" | "entered"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { ParallaxScale } from "@/components/parallax"
+import { TextReveal } from "@/components/text-reveal"
+import { CompilationSkills } from "@/components/compilation-skills"
+import { LightRays, BlurText, GlareHover, Threads, Aurora } from "@/components/react-bits"
+import { ReactBitsShowcase } from "@/components/react-bits-showcase"
 
 export default function Portfolio() {
-  const [appState, setAppState] = useState<AppState>("loading")
-  const videoRef = useRef<VideoBackgroundRef>(null)
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null)
+  const [mounted, setMounted] = useState(false)
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === "dark"
 
-  const handleEnter = () => {
-    setAppState("entered")
-  }
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
-  const isEntered = appState === "entered"
+  const { scrollYProgress } = useScroll()
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0])
+  const heroScale = useTransform(scrollYProgress, [0, 0.25], [1, 0.95])
+  const heroY = useTransform(scrollYProgress, [0, 0.25], [0, -80])
+
+  if (!mounted) return null
 
   return (
-    <ClickSpark sparkColor="rgba(255, 255, 255, 0.6)" sparkCount={8} sparkRadius={25}>
-      <main className="relative min-h-screen overflow-x-hidden">
-        <LoadingScreen isVisible={appState === "loading"} onComplete={handleEnter} />
-        <VideoBackground ref={videoRef} isActive={isEntered} />
-        <MusicPlayer isActive={isEntered} onAudioRef={setAudioElement} />
-        <AudioControls audioElement={audioElement} isVisible={isEntered} />
-        <LyricsDisplay audioElement={audioElement} isVisible={isEntered} />
+    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] overflow-x-hidden">
+      {/* Systems */}
+      <MusicPlayer isActive={true} onAudioRef={setAudioElement} />
+      <AudioControls audioElement={audioElement} isVisible={true} />
+      <LyricsDisplay audioElement={audioElement} isVisible={true} />
 
 
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--background)]/90 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            <a href="#" className="font-mono text-sm text-[var(--foreground)] tracking-wider">
+              anika@dev:~$
+            </a>
+            <ThemeToggle />
+          </div>
+        </div>
+      </nav>
 
-        <div
-          className={`relative z-20 min-h-screen transition-all duration-1000 ${isEntered ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
-        >
-          <div className="container mx-auto px-4 py-12 md:py-16">
-            {/* Hero Section */}
-            <section className="min-h-[80vh] flex items-center justify-center">
-              <TiltCard tiltAmount={8} glareEnable={false}>
-                <AnimatedBorder
-                  borderColor="rgba(255, 255, 255, 0.5)"
-                  className="rounded-2xl overflow-hidden max-w-lg mx-auto"
+      {/* ═══════════════════════════════════════
+          HERO SECTION
+          ═══════════════════════════════════════ */}
+      <motion.section
+        className="relative min-h-screen flex items-center overflow-hidden bg-[var(--background)]"
+        style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
+      >
+        {/* Background LightRays */}
+        <div className="absolute inset-0 z-0" style={{ opacity: isDark ? 0.4 : 0.45 }}>
+          <LightRays 
+            raysOrigin="top-center"
+            raysColor="#e63946"
+            raysSpeed={0.8}
+            lightSpread={1.2}
+            rayLength={2.0}
+            followMouse={true}
+            mouseInfluence={0.2}
+            fadeDistance={1.2}
+          />
+        </div>
+
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 pt-24">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left — Typography */}
+            <div className="lg:col-span-8">
+              {/* Name */}
+              <div className="mb-8">
+                <BlurText
+                  text="Anika Mahfuza"
+                  delay={150}
+                  className="text-display text-6xl sm:text-7xl lg:text-8xl xl:text-9xl text-[var(--foreground)]"
+                  animateBy="words"
+                  direction="top"
+                />
+              </div>
+
+              {/* Tagline */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.9 }}
+                className="text-base sm:text-lg text-[var(--foreground-secondary)] max-w-xl leading-relaxed mb-8"
+              >
+                Building robust systems and exploring the boundaries of code.
+                Specializing in low-level programming, security research, and web technologies.
+              </motion.p>
+
+              {/* Tech Tags */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 1.1 }}
+                className="flex flex-wrap gap-3 mb-10"
+              >
+                {["C#", "C++", "Python", "TypeScript", "Security"].map((tech, i) => (
+                  <motion.span
+                    key={tech}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2 + i * 0.08 }}
+                    className={`px-4 py-2 border text-xs font-mono uppercase tracking-wider transition-all duration-300 hover:text-[var(--foreground)] hover:border-[var(--foreground)] ${
+                      tech === "C++" 
+                        ? "border-[var(--foreground)] text-[var(--foreground)]" 
+                        : "border-[var(--border-strong)] text-[var(--foreground-secondary)]"
+                    }`}
+                  >
+                    {tech}
+                  </motion.span>
+                ))}
+              </motion.div>
+
+              {/* Social Links */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1.4 }}
+                className="flex items-center gap-3"
+              >
+                <GlareHover
+                  width="48px"
+                  height="48px"
+                  background="transparent"
+                  borderColor="var(--border-strong)"
+                  borderRadius="0px"
+                  glareColor="#e63946"
+                  glareOpacity={0.4}
+                  className="border border-[var(--border-strong)]"
                 >
-                  <GlassPanel className="text-center p-6 md:p-8" showBorder={false}>
-                    <FadeContent delay={100} direction="down" distance={20}>
-                      <div className="relative mx-auto mb-4 w-32 h-32">
-                        <div className="absolute inset-0 rounded-full overflow-hidden">
-                          <img
-                            src="/portfolio/profile.png"
-                            alt="Anika Mahfuza"
-                            className="w-full h-full object-cover rounded-full"
-                          />
-                        </div>
-                      </div>
-                    </FadeContent>
+                  <a
+                    href="https://discord.gg/68gVSXp74k"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full h-full flex items-center justify-center text-[var(--foreground-secondary)] hover:text-[var(--foreground)] transition-colors duration-300"
+                    title="Discord"
+                  >
+                    <DiscordIcon className="w-5 h-5" />
+                  </a>
+                </GlareHover>
+                <GlareHover
+                  width="48px"
+                  height="48px"
+                  background="transparent"
+                  borderColor="var(--border-strong)"
+                  borderRadius="0px"
+                  glareColor="#e63946"
+                  glareOpacity={0.4}
+                  className="border border-[var(--border-strong)]"
+                >
+                  <a
+                    href="https://guns.lol/mahfuza"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full h-full flex items-center justify-center text-[var(--foreground-secondary)] hover:text-[var(--foreground)] transition-colors duration-300"
+                    title="Links"
+                  >
+                    <ExternalLinkIcon className="w-5 h-5" />
+                  </a>
+                </GlareHover>
+              </motion.div>
+            </div>
 
-                    <h1 className="font-sans text-2xl md:text-3xl font-semibold mb-1 text-foreground tracking-tight">
-                      <GlitchText text="ANIKA MAHFUZA" speed={40} />
-                    </h1>
+            {/* Right — Profile Image */}
+            <div className="lg:col-span-4">
+              <ParallaxScale>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1, delay: 0.6 }}
+                  className="relative"
+                >
+                  <div className="relative aspect-square w-48 sm:w-56 lg:w-64 mx-auto overflow-hidden">
+                    <img
+                      src="/portfolio/profile.png"
+                      alt="Anika Mahfuza"
+                      className="w-full h-full object-cover transition-all duration-700"
+                    />
+                  </div>
+                  {/* Visit Counter */}
+                  <div className="mt-4 flex justify-center">
+                    <VisitCounter />
+                  </div>
+                </motion.div>
+              </ParallaxScale>
+            </div>
+          </div>
+        </div>
+      </motion.section>
 
-                    <p className="text-accent text-xs uppercase tracking-widest mb-3">
-                      <DecryptedText text="C# · C++ · Python · Web · Malware" speed={25} />
+      {/* ═══════════════════════════════════════
+          ABOUT SECTION
+          ═══════════════════════════════════════ */}
+      <section id="about" className="relative section-padding border-t border-[var(--border)] overflow-hidden">
+        {/* Background Threads */}
+        <div className="absolute inset-0 z-0" style={{ opacity: isDark ? 0.3 : 0.35 }}>
+          <Threads 
+            color={isDark ? [0.3, 0.3, 0.3] : [0.45, 0.45, 0.45]} 
+            amplitude={0.5} 
+            distance={0.2}
+          />
+        </div>
+
+        {/* Large decorative background number */}
+        <div className="absolute top-0 right-0 text-[12rem] sm:text-[16rem] lg:text-[20rem] font-bold leading-none text-[var(--foreground)] opacity-[0.03] select-none pointer-events-none translate-x-[10%] -translate-y-[10%] z-10">
+          01
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
+            {/* Left Column — Sticky Header */}
+            <div className="lg:col-span-5">
+              <div className="lg:sticky lg:top-32">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                >
+                  <span className="text-label mb-6 block">About</span>
+                  
+                  <TextReveal className="text-heading text-4xl lg:text-6xl text-[var(--foreground)]">
+                    Building in the shadows
+                  </TextReveal>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Right Column — Content */}
+            <div className="lg:col-span-7 space-y-8">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <TextReveal className="text-lg lg:text-xl text-[var(--foreground-secondary)] leading-relaxed">
+                  I'm a developer with a deep passion for understanding how things work under the hood. My journey spans from writing performance-critical C++ applications to crafting modern web experiences, with a particular fascination for security research and reverse engineering.
+                </TextReveal>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <TextReveal className="text-lg lg:text-xl text-[var(--foreground-secondary)] leading-relaxed">
+                  Currently focused on building robust, efficient systems that solve real problems. I believe in the power of clean code, thoughtful architecture, and the constant pursuit of knowledge.
+                </TextReveal>
+              </motion.div>
+
+              {/* Quote */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="mt-16 relative"
+              >
+                <div className="border-l-2 border-[var(--pop)] pl-8 lg:pl-12 py-4">
+                  <blockquote>
+                    <p className="text-2xl lg:text-4xl text-heading text-[var(--foreground)] leading-snug mb-6">
+                      "Vibe coders are next generation copy pasters"
                     </p>
-
-                    <FadeContent delay={400} blur>
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-6 text-pretty">
-                        Crafting code in the shadows. Developer, reverse engineer, and depressed.
-                      </p>
-                    </FadeContent>
-
-                    <FadeContent delay={600}>
-                      <div className="flex items-center justify-center gap-3">
-                        <Magnet strength={0.4}>
-                          <a
-                            href="https://discord.gg/68gVSXp74k"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="glass w-10 h-10 rounded-full flex items-center justify-center hover:bg-foreground/10 transition-all duration-300 group"
-                            aria-label="Discord"
-                          >
-                            <DiscordIcon className="w-4 h-4 text-foreground/70 group-hover:text-foreground transition-colors" />
-                          </a>
-                        </Magnet>
-                        <Magnet strength={0.4}>
-                          <a
-                            href="https://guns.lol/mahfuza"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="glass w-10 h-10 rounded-full flex items-center justify-center hover:bg-foreground/10 transition-all duration-300 group"
-                            aria-label="Links"
-                          >
-                            <ExternalLinkIcon className="w-4 h-4 text-foreground/70 group-hover:text-foreground transition-colors" />
-                          </a>
-                        </Magnet>
-                      </div>
-                      <div className="mt-6 flex justify-center">
-                        <VisitCounter />
-                      </div>
-                    </FadeContent>
-                  </GlassPanel>
-                  <BorderBeam size={250} duration={12} delay={9} />
-                </AnimatedBorder>
-              </TiltCard>
-            </section>
-
-            {/* Quote Section */}
-            <section className="py-8">
-              <FadeContent direction="up" distance={20}>
-                <div className="max-w-2xl mx-auto text-center">
-                  <blockquote className="relative">
-                    <span className="text-accent/30 text-4xl font-serif absolute -top-4 -left-2">"</span>
-                    <p className="text-foreground/80 text-lg md:text-xl italic font-light px-8">
-                      Vibe coders are next generation copy pasters
-                    </p>
-                    <span className="text-accent/30 text-4xl font-serif absolute -bottom-8 -right-2">"</span>
-                    <footer className="mt-4 text-muted-foreground text-sm">— Anika Mahfuza</footer>
+                    <footer className="text-label">
+                      — Anika Mahfuza
+                    </footer>
                   </blockquote>
                 </div>
-              </FadeContent>
-            </section>
-
-            {/* About Section */}
-            <section className="py-16">
-              <FadeContent direction="up" distance={40}>
-                <div className="max-w-3xl mx-auto">
-                  <TiltCard tiltAmount={5} glareEnable={false}>
-                    <AnimatedBorder
-                      borderColor="rgba(255, 255, 255, 0.5)"
-                      className="rounded-2xl overflow-hidden"
-                    >
-                      <GlassPanel className="p-6 md:p-8" showBorder={false}>
-                        <div className="flex items-center gap-3 mb-6">
-                          <div className="w-1 h-6 bg-accent/50 rounded-full" />
-                          <h2 className="font-sans text-xl md:text-2xl font-semibold text-foreground">
-                            <DecryptedText text="void About()" speed={50} />
-                          </h2>
-                        </div>
-                        <div className="grid md:grid-cols-2 gap-6">
-                          <div className="space-y-3 text-muted-foreground text-sm leading-relaxed">
-                            <FadeContent delay={200}>
-                              <p>
-                                Developer exploring the depths of system-level programming, security research, and web
-                                technologies.
-                              </p>
-                            </FadeContent>
-                            <FadeContent delay={400}>
-                              <p>
-                                My work spans from low-level C++ and C# applications to modern web development and malware
-                                analysis.
-                              </p>
-                            </FadeContent>
-                          </div>
-                          <div className="space-y-3">
-                            <FadeContent delay={300} direction="left">
-                              <Magnet strength={0.2} className="block">
-                                <AnimatedBorder
-                                  borderColor="rgba(255, 255, 255, 0.5)"
-                                  className="rounded-lg overflow-hidden"
-                                >
-                                  <div className="glass p-3 transition-all duration-300 hover:bg-foreground/5 border-none">
-                                    <span className="text-xs text-accent font-mono tracking-wider">std::vector&lt;Lang&gt;</span>
-                                    <p className="text-foreground text-sm mt-1">C#, C++, Python, JavaScript, TypeScript</p>
-                                  </div>
-                                </AnimatedBorder>
-                              </Magnet>
-                            </FadeContent>
-                            <FadeContent delay={500} direction="left">
-                              <Magnet strength={0.2} className="block">
-                                <AnimatedBorder
-                                  borderColor="rgba(255, 255, 255, 0.5)"
-                                  className="rounded-lg overflow-hidden"
-                                >
-                                  <div className="glass p-3 transition-all duration-300 hover:bg-foreground/5 border-none">
-                                    <span className="text-xs text-accent font-mono tracking-wider">enum class Focus</span>
-                                    <p className="text-foreground text-sm mt-1">
-                                      Web Development, Security Research, Reverse Engineering
-                                    </p>
-                                  </div>
-                                </AnimatedBorder>
-                              </Magnet>
-                            </FadeContent>
-                          </div>
-                        </div>
-                      </GlassPanel>
-                    </AnimatedBorder>
-                  </TiltCard>
-                </div>
-              </FadeContent>
-            </section>
-
-            {/* Skills Showcase Section */}
-            <section className="py-16">
-              <FadeContent direction="up" distance={20}>
-                <div className="max-w-xl mx-auto">
-                  <TiltCard tiltAmount={4} glareEnable={false}>
-                    <AnimatedBorder
-                      borderColor="rgba(255, 255, 255, 0.5)"
-                      className="rounded-2xl overflow-hidden"
-                    >
-                      <GlassPanel className="p-6" showBorder={false}>
-                        <SkillDisplay
-                          skills={[
-                            { name: "C#", level: "Proficient" },
-                            { name: "C++", level: "Advanced" },
-                            { name: "Python", level: "Advanced" },
-                            { name: "Web", level: "Advanced" },
-                          ]}
-                        />
-                      </GlassPanel>
-                    </AnimatedBorder>
-                  </TiltCard>
-                </div>
-              </FadeContent>
-            </section>
-
-            {/* Contact Section */}
-            <section className="py-16">
-              <FadeContent direction="up" distance={30}>
-                <TiltCard tiltAmount={6} glareEnable={false}>
-                  <AnimatedBorder
-                    borderColor="rgba(255, 255, 255, 0.5)"
-                    className="rounded-2xl overflow-hidden max-w-md mx-auto"
-                  >
-                    <GlassPanel variant="strong" className="text-center p-6" showBorder={false}>
-                      <h2 className="font-sans text-lg md:text-xl font-semibold text-foreground mb-3">
-                        <DecryptedText text="std::cin >> contact" speed={40} />
-                      </h2>
-                      <FadeContent delay={200}>
-                        <p className="text-muted-foreground text-sm mb-4 text-pretty">
-                          Interested in collaboration or have a project in mind? Let's connect.
-                        </p>
-                      </FadeContent>
-                      <FadeContent delay={400}>
-                        <Magnet strength={0.3}>
-                          <a
-                            href="https://discord.gg/68gVSXp74k"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground/10 hover:bg-foreground/20 rounded-full text-foreground text-sm transition-all duration-300 hover:shadow-lg hover:shadow-accent/10"
-                          >
-                            <ShinyText text="Join Discord" speed={3} className="font-medium" />
-                            <DiscordIcon className="w-3.5 h-3.5" />
-                          </a>
-                        </Magnet>
-                      </FadeContent>
-                    </GlassPanel>
-                  </AnimatedBorder>
-                </TiltCard>
-              </FadeContent>
-            </section>
-          </div>
-
-          {/* Footer */}
-          <footer className="relative z-20 py-6 text-center text-muted-foreground text-xs border-t border-border/30">
-            <div className="container mx-auto px-4 space-y-2">
-              <div className="font-mono text-accent/50 text-xs mb-2">return 0;</div>
-              <p>&copy; {new Date().getFullYear()} Anika Mahfuza. All rights reserved.</p>
-              <p className="text-muted-foreground/60">
-                Components inspired by{" "}
-                <a
-                  href="https://reactbits.dev"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent/70 hover:text-accent transition-colors underline underline-offset-2"
-                >
-                  ReactBits
-                </a>
-              </p>
+              </motion.div>
             </div>
-          </footer>
+          </div>
         </div>
-      </main>
-    </ClickSpark>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          SKILLS SECTION
+          ═══════════════════════════════════════ */}
+      <CompilationSkills />
+
+      {/* ═══════════════════════════════════════
+          CONTACT SECTION
+          ═══════════════════════════════════════ */}
+      <section id="contact" className="relative section-padding border-t border-[var(--border)] overflow-hidden">
+        {/* Background Aurora */}
+        <div className="absolute inset-0 z-0" style={{ opacity: isDark ? 0.2 : 0.3 }}>
+          <Aurora 
+            colorStops={isDark ? ['#e63946', '#0a0a0a', '#e63946'] : ['#e63946', '#d8d8d8', '#e63946']}
+            amplitude={0.8}
+            blend={0.4}
+            speed={0.5}
+          />
+        </div>
+
+        {/* Large decorative background number */}
+        <div className="absolute top-0 right-0 text-[12rem] sm:text-[16rem] lg:text-[20rem] font-bold leading-none text-[var(--foreground)] opacity-[0.03] select-none pointer-events-none translate-x-[10%] -translate-y-[10%] z-10">
+          03
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
+            {/* Left Column */}
+            <div className="lg:col-span-5">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+              >
+                <span className="text-label mb-6 block">Contact</span>
+                <TextReveal className="text-heading text-4xl lg:text-6xl text-[var(--foreground)]">
+                  Let's build something together
+                </TextReveal>
+              </motion.div>
+            </div>
+
+            {/* Right Column */}
+            <div className="lg:col-span-7 flex flex-col justify-center">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="mb-12"
+              >
+                <TextReveal className="text-xl lg:text-2xl text-[var(--foreground-secondary)] leading-relaxed">
+                  Interested in collaborating or have a project in mind? I'm always open to discussing new opportunities and interesting challenges.
+                </TextReveal>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="flex flex-wrap items-center gap-4"
+              >
+                <GlareHover
+                  width="auto"
+                  height="auto"
+                  background="var(--pop)"
+                  borderColor="var(--pop)"
+                  borderRadius="0px"
+                  glareColor="#ffffff"
+                  glareOpacity={0.6}
+                  className="inline-flex"
+                >
+                  <a
+                    href="https://discord.gg/68gVSXp74k"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-3 px-8 py-4 text-white font-medium text-sm tracking-wide uppercase"
+                  >
+                    <DiscordIcon className="w-5 h-5" />
+                    <span>Connect on Discord</span>
+                  </a>
+                </GlareHover>
+                <GlareHover
+                  width="auto"
+                  height="auto"
+                  background="transparent"
+                  borderColor="var(--border-strong)"
+                  borderRadius="0px"
+                  glareColor="#e63946"
+                  glareOpacity={0.5}
+                  className="inline-flex border border-[var(--border-strong)]"
+                >
+                  <a
+                    href="https://guns.lol/mahfuza"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-3 px-8 py-4 text-[var(--foreground)] font-medium text-sm tracking-wide uppercase"
+                  >
+                    <ExternalLinkIcon className="w-5 h-5" />
+                    <span>View All Links</span>
+                  </a>
+                </GlareHover>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          REACT BITS SHOWCASE
+          ═══════════════════════════════════════ */}
+      <ReactBitsShowcase />
+
+      {/* ═══════════════════════════════════════
+          FOOTER
+          ═══════════════════════════════════════ */}
+      <footer className="py-8 pb-24 border-t border-[var(--border)]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-[var(--foreground-muted)] font-mono">
+              © {new Date().getFullYear()} Anika Mahfuza
+            </span>
+            <div className="flex items-center gap-2">
+              <a
+                href="https://discord.gg/68gVSXp74k"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 flex items-center justify-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors duration-300"
+              >
+                <DiscordIcon className="w-4 h-4" />
+              </a>
+              <a
+                href="https://guns.lol/mahfuza"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 flex items-center justify-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors duration-300"
+              >
+                <ExternalLinkIcon className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
   )
 }

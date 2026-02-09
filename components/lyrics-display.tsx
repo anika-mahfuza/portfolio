@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Music, X, ChevronDown, ChevronUp } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Music, X, ChevronDown } from "lucide-react"
 import { fetchLyrics, SONG_CONFIG, type LyricLine } from "@/lib/lyrics-service"
 
 interface LyricsDisplayProps {
@@ -12,14 +13,12 @@ interface LyricsDisplayProps {
 export function LyricsDisplay({ audioElement, isVisible }: LyricsDisplayProps) {
     const [lyrics, setLyrics] = useState<LyricLine[]>([])
     const [currentLineIndex, setCurrentLineIndex] = useState(-1)
-    const [isExpanded, setIsExpanded] = useState(true)
+    const [isExpanded, setIsExpanded] = useState(false)
     const [isMinimized, setIsMinimized] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const containerRef = useRef<HTMLDivElement>(null)
     const lyricsContainerRef = useRef<HTMLDivElement>(null)
 
-    // Fetch lyrics on mount
     useEffect(() => {
         async function loadLyrics() {
             setIsLoading(true)
@@ -40,14 +39,11 @@ export function LyricsDisplay({ audioElement, isVisible }: LyricsDisplayProps) {
         loadLyrics()
     }, [])
 
-    // Sync lyrics with audio playback
     useEffect(() => {
         if (!audioElement || lyrics.length === 0) return
 
         const updateCurrentLine = () => {
             const currentTime = audioElement.currentTime
-
-            // Find the current line based on time
             let newIndex = -1
             for (let i = lyrics.length - 1; i >= 0; i--) {
                 if (currentTime >= lyrics[i].time) {
@@ -60,7 +56,6 @@ export function LyricsDisplay({ audioElement, isVisible }: LyricsDisplayProps) {
             }
         }
 
-        // Update more frequently for smoother tracking
         const interval = setInterval(updateCurrentLine, 100)
         audioElement.addEventListener("timeupdate", updateCurrentLine)
         audioElement.addEventListener("seeked", updateCurrentLine)
@@ -72,29 +67,20 @@ export function LyricsDisplay({ audioElement, isVisible }: LyricsDisplayProps) {
         }
     }, [audioElement, lyrics, currentLineIndex])
 
-    // Auto-scroll to current line
     useEffect(() => {
         if (currentLineIndex >= 0 && lyricsContainerRef.current) {
             const container = lyricsContainerRef.current
             const currentLineElement = container.children[currentLineIndex] as HTMLElement
-
             if (currentLineElement) {
                 const containerHeight = container.clientHeight
                 const lineTop = currentLineElement.offsetTop
                 const lineHeight = currentLineElement.clientHeight
-
-                // Center the current line
                 const scrollTo = lineTop - containerHeight / 2 + lineHeight / 2
-
-                container.scrollTo({
-                    top: scrollTo,
-                    behavior: "smooth"
-                })
+                container.scrollTo({ top: scrollTo, behavior: "smooth" })
             }
         }
     }, [currentLineIndex])
 
-    // Click on lyric to seek
     const handleLyricClick = (time: number) => {
         if (audioElement) {
             audioElement.currentTime = time
@@ -104,153 +90,144 @@ export function LyricsDisplay({ audioElement, isVisible }: LyricsDisplayProps) {
     if (!isVisible) return null
 
     return (
-        <div
-            ref={containerRef}
-            className={`fixed left-4 bottom-24 z-30 transition-all duration-500 ease-out ${isMinimized ? "w-auto" : "w-80"
-                }`}
-        >
-            {/* Minimized state - just a button */}
-            {isMinimized ? (
-                <button
-                    onClick={() => setIsMinimized(false)}
-                    className="flex items-center gap-2 bg-background/40 backdrop-blur-xl rounded-full px-4 py-3 border border-foreground/10 hover:bg-background/60 transition-all duration-300 group"
-                >
-                    <Music className="w-4 h-4 text-accent" />
-                    <span className="text-xs text-foreground/70 group-hover:text-foreground transition-colors">
-                        Show Lyrics
-                    </span>
-                </button>
-            ) : (
-                /* Expanded lyrics panel */
-                <div className="bg-background/40 backdrop-blur-xl rounded-2xl border border-foreground/10 overflow-hidden shadow-2xl shadow-black/20">
-                    {/* Header */}
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-foreground/5">
-                        <div className="flex items-center gap-2 min-w-0">
-                            <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center flex-shrink-0">
-                                <Music className="w-4 h-4 text-accent" />
-                            </div>
-                            <div className="min-w-0">
-                                <p className="text-sm font-medium text-foreground truncate">
-                                    {SONG_CONFIG.name}
-                                </p>
-                                <p className="text-xs text-foreground/50 truncate">
-                                    {SONG_CONFIG.artist}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <button
-                                onClick={() => setIsExpanded(!isExpanded)}
-                                className="p-1.5 hover:bg-foreground/10 rounded-lg transition-colors"
-                                aria-label={isExpanded ? "Collapse" : "Expand"}
-                            >
-                                {isExpanded ? (
-                                    <ChevronDown className="w-4 h-4 text-foreground/50" />
-                                ) : (
-                                    <ChevronUp className="w-4 h-4 text-foreground/50" />
-                                )}
-                            </button>
-                            <button
-                                onClick={() => setIsMinimized(true)}
-                                className="p-1.5 hover:bg-foreground/10 rounded-lg transition-colors"
-                                aria-label="Minimize"
-                            >
-                                <X className="w-4 h-4 text-foreground/50" />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Current lyric preview when collapsed */}
-                    {!isExpanded && lyrics.length > 0 && currentLineIndex >= 0 && (
-                        <div className="px-4 py-2 border-b border-foreground/5">
-                            <p className="text-sm text-foreground/80 truncate text-center">
-                                {lyrics[currentLineIndex]?.text || "♪"}
-                            </p>
-                        </div>
-                    )}
-
-                    {/* Lyrics content */}
-                    <div
-                        className={`transition-all duration-500 ease-out overflow-hidden ${isExpanded ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-                            }`}
+        <div className="fixed bottom-8 left-8 z-[60]">
+            <AnimatePresence mode="wait">
+                {isMinimized ? (
+                    <motion.button
+                        key="minimized"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => setIsMinimized(false)}
+                        className="w-11 h-11 bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--foreground-muted)] flex items-center justify-center transition-all duration-300"
                     >
-                        {isLoading ? (
-                            <div className="flex items-center justify-center py-8">
-                                <div className="flex items-center gap-2 text-foreground/50">
-                                    <div className="w-4 h-4 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
-                                    <span className="text-sm">Loading lyrics...</span>
+                        <Music className="w-4 h-4 text-[var(--pop)]" />
+                    </motion.button>
+                ) : (
+                    <motion.div
+                        key="panel"
+                        initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        className="bg-[var(--surface)] border border-[var(--border)] overflow-hidden w-72 font-sans"
+                    >
+                        {/* Header */}
+                        <div className="flex items-center justify-between px-3 py-2.5 border-b border-[var(--border)]">
+                            <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-7 h-7 bg-[var(--pop-subtle)] flex items-center justify-center flex-shrink-0">
+                                    <Music className="w-3.5 h-3.5 text-[var(--pop)]" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-xs font-medium text-[var(--foreground)] truncate">
+                                        {SONG_CONFIG.name}
+                                    </p>
+                                    <p className="text-[10px] text-[var(--foreground-muted)] truncate">
+                                        {SONG_CONFIG.artist}
+                                    </p>
                                 </div>
                             </div>
-                        ) : error ? (
-                            <div className="flex flex-col items-center justify-center py-8 gap-4">
-                                {/* Animated equalizer bars */}
-                                <div className="flex items-end justify-center gap-1 h-16">
-                                    {[...Array(12)].map((_, i) => (
-                                        <div
-                                            key={i}
-                                            className="w-1 bg-gradient-to-t from-accent/50 to-accent rounded-full animate-pulse"
-                                            style={{
-                                                height: `${20 + Math.random() * 40}px`,
-                                                animationDelay: `${i * 100}ms`,
-                                                animationDuration: `${600 + Math.random() * 400}ms`,
-                                            }}
-                                        />
-                                    ))}
-                                </div>
-                                <p className="text-sm text-foreground/40 text-center">
-                                    ♪ No lyrics available ♪<br />
-                                    <span className="text-xs text-foreground/30">Just vibe to the music</span>
-                                </p>
+                            <div className="flex items-center gap-0.5">
+                                <button
+                                    onClick={() => setIsExpanded(!isExpanded)}
+                                    className="p-1.5 hover:bg-[var(--background-secondary)] transition-colors"
+                                >
+                                    <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                                        <ChevronDown className="w-4 h-4 text-[var(--foreground-muted)]" />
+                                    </motion.div>
+                                </button>
+                                <button
+                                    onClick={() => setIsMinimized(true)}
+                                    className="p-1.5 hover:bg-[var(--background-secondary)] transition-colors"
+                                >
+                                    <X className="w-4 h-4 text-[var(--foreground-muted)]" />
+                                </button>
                             </div>
-                        ) : (
-                            <div
-                                ref={lyricsContainerRef}
-                                className="h-64 overflow-y-auto px-4 py-4 lyrics-scroll"
-                                style={{
-                                    maskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)",
-                                    WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)",
-                                }}
-                            >
-                                {/* Spacer for centering first line */}
-                                <div className="h-24" />
+                        </div>
 
-                                {lyrics.filter(l => l.text !== "♪").map((line, index, filteredArr) => {
-                                    // Find actual index for this line in original array
-                                    const actualIndex = lyrics.findIndex(l => l.time === line.time && l.text === line.text)
-                                    const isCurrent = actualIndex === currentLineIndex
-                                    const isPast = actualIndex < currentLineIndex
+                        {/* Current lyric preview */}
+                        <AnimatePresence>
+                            {!isExpanded && !isLoading && !error && lyrics.length > 0 && currentLineIndex >= 0 && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="px-3 py-2 border-b border-[var(--border)] overflow-hidden"
+                                >
+                                    <p className="text-xs text-[var(--foreground-secondary)] truncate text-center">
+                                        {lyrics[currentLineIndex]?.text || "♪"}
+                                    </p>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
-                                    return (
-                                        <button
-                                            key={`${line.time}-${index}`}
-                                            onClick={() => handleLyricClick(line.time)}
-                                            className={`block w-full text-left py-2 px-2 rounded-lg transition-all duration-300 ease-out ${isCurrent
-                                                ? "text-foreground scale-105 bg-foreground/5"
-                                                : isPast
-                                                    ? "text-foreground/30"
-                                                    : "text-foreground/50 hover:text-foreground/70"
+                        {/* Lyrics content */}
+                        <motion.div
+                            initial={false}
+                            animate={{ height: isExpanded ? 160 : 0, opacity: isExpanded ? 1 : 0 }}
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                            className="overflow-hidden"
+                        >
+                            {isLoading ? (
+                                <div className="flex items-center justify-center h-40">
+                                    <div className="flex items-center gap-2 text-[var(--foreground-muted)]">
+                                        <div className="w-3 h-3 border-2 border-[var(--border-strong)] border-t-[var(--pop)] rounded-full animate-spin" />
+                                        <span className="text-xs">Loading...</span>
+                                    </div>
+                                </div>
+                            ) : error ? (
+                                <div className="flex flex-col items-center justify-center h-40 gap-2">
+                                    <div className="flex items-end justify-center gap-0.5 h-6">
+                                        {[...Array(6)].map((_, i) => (
+                                            <div
+                                                key={i}
+                                                className="w-0.5 bg-[var(--pop)] animate-pulse"
+                                                style={{ height: `${8 + Math.random() * 10}px`, animationDelay: `${i * 100}ms` }}
+                                            />
+                                        ))}
+                                    </div>
+                                    <p className="text-[10px] text-[var(--foreground-muted)] text-center">No lyrics available</p>
+                                </div>
+                            ) : (
+                                <div
+                                    ref={lyricsContainerRef}
+                                    className="h-40 overflow-y-auto px-3 py-2 lyrics-scroll"
+                                    style={{
+                                        maskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
+                                        WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
+                                    }}
+                                >
+                                    <div className="h-16" />
+                                    {lyrics.filter(l => l.text !== "♪").map((line, index) => {
+                                        const actualIndex = lyrics.findIndex(l => l.time === line.time && l.text === line.text)
+                                        const isCurrent = actualIndex === currentLineIndex
+                                        const isPast = actualIndex < currentLineIndex
+
+                                        return (
+                                            <button
+                                                key={`${line.time}-${index}`}
+                                                onClick={() => handleLyricClick(line.time)}
+                                                className={`block w-full text-left py-1.5 px-2 transition-all duration-200 text-sm font-sans ${
+                                                    isCurrent
+                                                        ? "text-[var(--foreground)] bg-[var(--pop-subtle)] font-medium"
+                                                        : isPast
+                                                        ? "text-[var(--foreground-subtle)]"
+                                                        : "text-[var(--foreground-muted)] hover:text-[var(--foreground-secondary)]"
                                                 }`}
-                                            style={{
-                                                transform: isCurrent ? "scale(1.02)" : "scale(1)",
-                                                textShadow: isCurrent ? "0 0 30px rgba(255,255,255,0.3)" : "none",
-                                            }}
-                                        >
-                                            <span
-                                                className={`text-sm font-medium transition-all duration-300 ${isCurrent ? "text-base" : ""}`}
                                             >
                                                 {line.text}
-                                            </span>
-                                        </button>
-                                    )
-                                })}
-
-                                {/* Spacer for centering last line */}
-                                <div className="h-24" />
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
+                                            </button>
+                                        )
+                                    })}
+                                    <div className="h-16" />
+                                </div>
+                            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     )
 }

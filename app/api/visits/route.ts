@@ -1,14 +1,25 @@
 import { kv } from "@vercel/kv"
 import { NextResponse } from "next/server"
 
-// If no KV, we fallback to a mocks
+const BASE_VISIT_COUNT = 155
+
+// Initialize visits with base count if not set
+async function initializeVisits(): Promise<number> {
+    const current = await kv.get("portfolio_visits")
+    if (current === null || current === undefined) {
+        await kv.set("portfolio_visits", BASE_VISIT_COUNT)
+        return BASE_VISIT_COUNT
+    }
+    return Number(current)
+}
+
 export async function GET() {
     try {
-        const visits = await kv.get("portfolio_visits")
-        return NextResponse.json({ visits: visits || 0 })
+        const visits = await initializeVisits()
+        return NextResponse.json({ visits })
     } catch (error) {
         console.error("KV Error:", error)
-        return NextResponse.json({ visits: 0 })
+        return NextResponse.json({ visits: BASE_VISIT_COUNT })
     }
 }
 
@@ -17,10 +28,12 @@ export async function POST(req: Request) {
         const body = await req.json()
         const { fingerprint, isIncognito } = body
 
+        // Initialize if needed
+        const currentCount = await initializeVisits()
+
         // If incognito, just return current count without incrementing
         if (isIncognito) {
-            const current = await kv.get("portfolio_visits")
-            return NextResponse.json({ visits: current || 0, status: "incognito_ignored" })
+            return NextResponse.json({ visits: currentCount, status: "incognito_ignored" })
         }
 
         const ip = req.headers.get("x-forwarded-for") || "unknown"
@@ -37,10 +50,10 @@ export async function POST(req: Request) {
         } else {
             // Already visited
             const current = await kv.get("portfolio_visits")
-            return NextResponse.json({ visits: current || 0, status: "duplicate" })
+            return NextResponse.json({ visits: Number(current) || BASE_VISIT_COUNT, status: "duplicate" })
         }
     } catch (error) {
         console.error("KV Error:", error)
-        return NextResponse.json({ visits: 0, status: "error" })
+        return NextResponse.json({ visits: BASE_VISIT_COUNT, status: "error" })
     }
 }
