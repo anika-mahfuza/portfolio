@@ -1,9 +1,10 @@
+
 "use client"
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "next-themes"
-import { SkillsMeshBackground } from "@/components/skills-mesh-bg"
+import { Waves } from "@/components/react-bits"
 
 interface Skill {
   name: string
@@ -43,9 +44,25 @@ export function CompilationSkills() {
       id="skills"
       className="relative border-t border-[var(--border)] bg-[var(--background)] min-h-screen overflow-hidden"
     >
-      {/* Mesh Gradient Background */}
+      {/* Waves Background */}
       <div className="absolute inset-0 z-0">
-        <SkillsMeshBackground />
+        <Waves 
+          lineColor={isDark ? "rgba(230, 57, 70, 0.15)" : "rgba(220, 38, 38, 0.2)"}
+          backgroundColor="transparent"
+          waveSpeedX={0.0125}
+          waveSpeedY={0.005}
+          waveAmpX={32}
+          waveAmpY={16}
+          xGap={10}
+          yGap={32}
+          friction={0.925}
+          tension={0.005}
+          maxCursorMove={0}
+          style={{
+            opacity: isDark ? 0.35 : 0.6,
+            mixBlendMode: "normal"
+          }}
+        />
       </div>
       
       {/* Content */}
@@ -186,8 +203,6 @@ export function CompilationSkills() {
             </div>
           </motion.div>
         </div>
-
-
       </div>
     </section>
   )
