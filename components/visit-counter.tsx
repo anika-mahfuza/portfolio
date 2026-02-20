@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { Eye } from "lucide-react"
-import { detectIncognito } from "@/lib/detect-incognito"
 
 export function VisitCounter() {
     const [count, setCount] = useState<number | null>(null)
@@ -11,12 +10,9 @@ export function VisitCounter() {
     useEffect(() => {
         const registerVisit = async () => {
             try {
-                const isIncognito = await detectIncognito()
-
                 const res = await fetch("/api/visits", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ isIncognito }),
                 })
 
                 const data = await res.json()
@@ -31,15 +27,17 @@ export function VisitCounter() {
         registerVisit()
     }, [])
 
-    if (loading) return null
-
     return (
-        <div 
+        <div
             className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--foreground-muted)]"
             title="Unique Profile Visits"
         >
             <Eye className="w-3.5 h-3.5" />
-            <span>{count?.toLocaleString() ?? 195}</span>
+            {loading ? (
+                <span className="inline-block w-8 h-3.5 rounded-sm bg-[var(--foreground-muted)]/20 animate-pulse" />
+            ) : (
+                <span>{count?.toLocaleString() ?? "—"}</span>
+            )}
         </div>
     )
 }

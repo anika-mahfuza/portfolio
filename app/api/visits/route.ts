@@ -42,28 +42,27 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json()
-        const { isIncognito } = body
-
         const currentCount = await initializeVisits()
-
-        if (isIncognito) {
-            return NextResponse.json({ visits: currentCount, status: "incognito_ignored" })
-        }
 
         const forwardedFor = req.headers.get("x-forwarded-for")
         const ip = forwardedFor?.split(",")[0].trim() || "unknown"
+
+        // Don't increment for requests with no identifiable IP
+        if (ip === "unknown") {
+            return NextResponse.json({ visits: currentCount, status: "no_ip" })
+        }
+
         const ipHash = hashIP(ip)
         const uniqueKey = `visit:${ipHash}`
 
         const exists = await getKV().get(uniqueKey)
-        
+
         if (!exists) {
             await getKV().set(uniqueKey, "1")
             const newCount = await getKV().incr("portfolio_visits")
             return NextResponse.json({ visits: newCount, status: "incremented" })
         }
-        
+
         return NextResponse.json({ visits: currentCount, status: "duplicate" })
     } catch (error) {
         console.error("KV Error:", error)
