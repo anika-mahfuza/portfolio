@@ -1,7 +1,7 @@
 import { kv } from "@vercel/kv"
 import { NextResponse } from "next/server"
 
-const BASE_VISIT_COUNT = 155
+const BASE_VISIT_COUNT = 195
 
 // Initialize visits with base count if not set
 async function initializeVisits(): Promise<number> {
