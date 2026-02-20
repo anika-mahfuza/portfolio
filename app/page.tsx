@@ -184,7 +184,7 @@ export default function Portfolio() {
                 >
                   <div className="relative aspect-square w-48 sm:w-56 lg:w-64 mx-auto overflow-hidden">
                     <img
-                      src="/portfolio/profile.png"
+                      src="/profile.png"
                       alt="Anika Mahfuza"
                       className="w-full h-full object-cover transition-all duration-700"
                     />
