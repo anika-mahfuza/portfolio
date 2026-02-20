@@ -1,10 +1,37 @@
 import { createClient } from "@vercel/kv"
+import Redis from "ioredis"
 import { NextResponse } from "next/server"
 
-const kv = createClient({
-    url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL,
-    token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN,
-})
+// Helper to unify Redis clients
+interface RedisClient {
+    get(key: string): Promise<string | number | null>
+    set(key: string, value: string | number, options?: any): Promise<any>
+    incr(key: string): Promise<number>
+}
+
+let kv: RedisClient
+
+if (process.env.REDIS_URL) {
+    // Use standard Redis (ioredis) if REDIS_URL is present
+    const redis = new Redis(process.env.REDIS_URL)
+    kv = {
+        get: (key) => redis.get(key),
+        set: (key, value, options) => {
+            if (options?.nx && options?.ex) {
+                return redis.set(key, value, 'NX', 'EX', options.ex)
+            }
+            return redis.set(key, value)
+        },
+        incr: (key) => redis.incr(key)
+    }
+} else {
+    // Fallback to Vercel KV (HTTP)
+    const vercelKv = createClient({
+        url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "",
+        token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "",
+    })
+    kv = vercelKv
+}
 
 const BASE_VISIT_COUNT = 195
 
