@@ -1,31 +1,24 @@
 import { createClient } from "@vercel/kv"
 import Redis from "ioredis"
 import { NextResponse } from "next/server"
+import { createHash } from "crypto"
 
-// Helper to unify Redis clients
 interface RedisClient {
     get(key: string): Promise<string | number | null>
-    set(key: string, value: string | number, options?: any): Promise<any>
+    set(key: string, value: string | number): Promise<any>
     incr(key: string): Promise<number>
 }
 
 let kv: RedisClient
 
 if (process.env.REDIS_URL) {
-    // Use standard Redis (ioredis) if REDIS_URL is present
     const redis = new Redis(process.env.REDIS_URL)
     kv = {
         get: (key) => redis.get(key),
-        set: (key, value, options) => {
-            if (options?.nx && options?.ex) {
-                return redis.set(key, value, 'NX', 'EX', options.ex)
-            }
-            return redis.set(key, value)
-        },
+        set: (key, value) => redis.set(key, value),
         incr: (key) => redis.incr(key)
     }
 } else {
-    // Fallback to Vercel KV (HTTP)
     const vercelKv = createClient({
         url: process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "",
         token: process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "",
@@ -34,8 +27,12 @@ if (process.env.REDIS_URL) {
 }
 
 const BASE_VISIT_COUNT = 195
+const IP_HASH_SALT = "portfolio-visits-2024"
 
-// Initialize visits with base count if not set
+function hashIP(ip: string): string {
+    return createHash('sha256').update(ip + IP_HASH_SALT).digest('hex').slice(0, 16)
+}
+
 async function initializeVisits(): Promise<number> {
     const current = await kv.get("portfolio_visits")
     if (current === null || current === undefined) {
@@ -58,33 +55,28 @@ export async function GET() {
 export async function POST(req: Request) {
     try {
         const body = await req.json()
-        const { fingerprint, isIncognito } = body
+        const { isIncognito } = body
 
-        // Initialize if needed
         const currentCount = await initializeVisits()
 
-        // If incognito, just return current count without incrementing
         if (isIncognito) {
             return NextResponse.json({ visits: currentCount, status: "incognito_ignored" })
         }
 
-        const ip = req.headers.get("x-forwarded-for") || "unknown"
-        // Use fingerprint as the primary unique key (IP can change on refresh/networks)
-        const uniqueKey = `visit:${fingerprint}`
+        const forwardedFor = req.headers.get("x-forwarded-for")
+        const ip = forwardedFor?.split(",")[0].trim() || "unknown"
+        const ipHash = hashIP(ip)
+        const uniqueKey = `visit:${ipHash}`
 
-        // Check if this specific visitor has been seen recently (e.g., 24h)
-        // We use SET with NX (not exists) and EX (expire)
-        const isNew = await kv.set(uniqueKey, "1", { nx: true, ex: 86400 })
-
-        if (isNew) {
-            // It's a valid new unique visit
+        const exists = await kv.get(uniqueKey)
+        
+        if (!exists) {
+            await kv.set(uniqueKey, "1")
             const newCount = await kv.incr("portfolio_visits")
             return NextResponse.json({ visits: newCount, status: "incremented" })
-        } else {
-            // Already visited
-            const current = await kv.get("portfolio_visits")
-            return NextResponse.json({ visits: Number(current) || BASE_VISIT_COUNT, status: "duplicate" })
         }
+        
+        return NextResponse.json({ visits: currentCount, status: "duplicate" })
     } catch (error) {
         console.error("KV Error:", error)
         return NextResponse.json({ visits: BASE_VISIT_COUNT, status: "error" })
