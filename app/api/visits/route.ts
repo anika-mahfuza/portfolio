@@ -69,7 +69,8 @@ export async function POST(req: Request) {
         }
 
         const ip = req.headers.get("x-forwarded-for") || "unknown"
-        const uniqueKey = `visit:${ip}:${fingerprint}`
+        // Use fingerprint as the primary unique key (IP can change on refresh/networks)
+        const uniqueKey = `visit:${fingerprint}`
 
         // Check if this specific visitor has been seen recently (e.g., 24h)
         // We use SET with NX (not exists) and EX (expire)
