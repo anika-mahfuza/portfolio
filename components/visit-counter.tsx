@@ -21,7 +21,7 @@ export function VisitCounter() {
                 const isIncognito = await detectIncognito()
 
                 // 3. Call API
-                const res = await fetch("/portfolio/api/visits", {
+                const res = await fetch("/api/visits", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
