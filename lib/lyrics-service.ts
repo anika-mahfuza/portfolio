@@ -5,7 +5,7 @@ export const SONG_CONFIG = {
     artist: "AURORA",
     album: "The Gods We Can Touch",
     duration: 199, // 3:19 = 199 seconds
-    audioFile: "/portfolio/music.mp3", // Include basePath for Next.js
+    audioFile: "/music.mp3",
 }
 
 export interface LyricLine {
