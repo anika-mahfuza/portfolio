@@ -24,7 +24,7 @@ export function TextReveal({ children, className = "", delay = 0 }: TextRevealPr
   return (
     <div ref={ref} className={className}>
       {words.map((word, i) => (
-        <span key={i} className="inline-block overflow-hidden mr-[0.25em]">
+        <span key={i} className="inline-block overflow-hidden mr-[0.25em] pb-[0.2em] -mb-[0.2em]">
           <motion.span
             className="inline-block"
             initial={{ y: 40, opacity: 0 }}
@@ -48,7 +48,7 @@ export function TextRevealLine({ children, className = "", delay = 0 }: TextReve
   const isInView = useInView(ref, { once: true, margin: "-50px" })
 
   return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
+    <div ref={ref} className={`overflow-hidden pb-[0.2em] -mb-[0.2em] ${className}`}>
       <motion.div
         initial={{ y: "100%" }}
         animate={isInView ? { y: 0 } : {}}
@@ -73,7 +73,7 @@ export function TextRevealCharacter({ children, className = "", delay = 0 }: Tex
   return (
     <div ref={ref} className={className}>
       {characters.map((char, i) => (
-        <span key={i} className="inline-block overflow-hidden">
+        <span key={i} className="inline-block overflow-hidden pb-[0.2em] -mb-[0.2em]">
           <motion.span
             className="inline-block"
             initial={{ y: 50, opacity: 0, rotateX: -90 }}
