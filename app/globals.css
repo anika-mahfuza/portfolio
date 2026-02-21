@@ -3,6 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes cursor-blink {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0; }
+}
+
 /* ============================================
    MODERN CREATIVE PORTFOLIO
    Monochrome + pop color, bold typography
@@ -27,8 +32,18 @@
 
   /* Pop color — vibrant electric red */
   --pop: #ff2a3d;
+  --pop-warm: #ff4757;
+  /* Energy, urgency */
+  --pop-cool: #e74c3c;
+  /* Professional, trustworthy */
+  --pop-accent: #ff6b6b;
+  /* Friendly, approachable */
   --pop-subtle: rgba(255, 42, 61, 0.1);
-  --pop-glow: 0 0 20px rgba(255, 42, 61, 0.4);
+  --pop-glow: 0 0 10px rgba(255, 42, 61, 0.8), 0 0 30px rgba(255, 42, 61, 0.6), 0 0 50px rgba(255, 42, 61, 0.4);
+
+  /* Enhanced color psychology */
+  --gradient-subtle: linear-gradient(135deg, var(--pop) 0%, transparent 100%);
+  --gradient-bold: linear-gradient(45deg, var(--pop) 0%, var(--accent) 100%);
 
   --border: #d4d0c8;
   --border-hover: #b8b4ac;
@@ -72,8 +87,18 @@
 
   /* Pop color — piercing neon red */
   --pop: #ff2a3d;
+  --pop-warm: #ff4757;
+  /* Energy, urgency */
+  --pop-cool: #e74c3c;
+  /* Professional, trustworthy */
+  --pop-accent: #ff6b6b;
+  /* Friendly, approachable */
   --pop-subtle: rgba(255, 42, 61, 0.15);
-  --pop-glow: 0 0 30px rgba(255, 42, 61, 0.6);
+  --pop-glow: 0 0 10px rgba(255, 42, 61, 0.9), 0 0 40px rgba(255, 42, 61, 0.7), 0 0 60px rgba(255, 42, 61, 0.5);
+
+  /* Enhanced color psychology */
+  --gradient-subtle: linear-gradient(135deg, var(--pop) 0%, transparent 100%);
+  --gradient-bold: linear-gradient(45deg, var(--pop) 0%, var(--accent) 100%);
 
   --border: #1a1a1a;
   --border-hover: #2a2a2a;
@@ -106,6 +131,7 @@
 
 @theme inline {
   --font-sans: var(--font-sans-var, "Manrope"), system-ui, sans-serif;
+  --font-display: var(--font-display-var, "Space Grotesk"), system-ui, sans-serif;
   --font-mono: var(--font-mono-var, "JetBrains Mono"), monospace;
 
   --color-background: var(--background);
@@ -157,15 +183,40 @@
    TYPOGRAPHY UTILITIES - CINEMATIC SCALE
    ============================================ */
 
-.text-display {
+/* Enhanced Typography System */
+.text-hero {
+  font-family: var(--font-display);
   font-weight: 800;
+  font-variation-settings: 'wght' 800;
+  letter-spacing: -0.06em;
+  line-height: 0.8;
+  text-transform: uppercase;
+  font-size: clamp(4rem, 10vw, 16rem);
+}
+
+.text-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variation-settings: 'wght' 800;
   letter-spacing: -0.05em;
   line-height: 0.85;
   text-transform: uppercase;
 }
 
-.text-heading {
+.text-display-enhanced {
+  font-family: var(--font-display);
   font-weight: 700;
+  font-variation-settings: 'wght' 700;
+  letter-spacing: -0.05em;
+  line-height: 0.85;
+  text-transform: uppercase;
+  font-size: clamp(2.5rem, 6vw, 8rem);
+}
+
+.text-heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variation-settings: 'wght' 700;
   letter-spacing: -0.04em;
   line-height: 1;
 }
@@ -177,6 +228,325 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--foreground-muted);
+}
+
+/* Enhanced Typography Scale */
+.text-xs {
+  font-size: clamp(0.7rem, 1.5vw, 0.75rem);
+}
+
+.text-sm {
+  font-size: clamp(0.8rem, 2vw, 0.875rem);
+}
+
+.text-base {
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+}
+
+.text-lg {
+  font-size: clamp(1.125rem, 3vw, 1.25rem);
+}
+
+.text-xl {
+  font-size: clamp(1.25rem, 3.5vw, 1.5rem);
+}
+
+.text-2xl {
+  font-size: clamp(1.5rem, 4vw, 1.75rem);
+}
+
+.text-3xl {
+  font-size: clamp(1.75rem, 4.5vw, 2rem);
+}
+
+.text-4xl {
+  font-size: clamp(2rem, 5vw, 2.5rem);
+}
+
+.text-5xl {
+  font-size: clamp(2.25rem, 5.5vw, 3rem);
+}
+
+.text-6xl {
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+}
+
+.text-7xl {
+  font-size: clamp(3rem, 7vw, 4.5rem);
+}
+
+.text-8xl {
+  font-size: clamp(3.5rem, 8vw, 6rem);
+}
+
+.text-9xl {
+  font-size: clamp(4rem, 9vw, 8rem);
+}
+
+/* Kinetic Typography Animations */
+@keyframes text-unfold {
+  from {
+    transform: translateY(100%) rotateX(-90deg);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) rotateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes letter-reveal {
+  from {
+    transform: translateY(100%) rotateY(90deg);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) rotateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes weight-shift {
+  0% {
+    font-variation-settings: 'wght' 300;
+  }
+
+  50% {
+    font-variation-settings: 'wght' 800;
+  }
+
+  100% {
+    font-variation-settings: 'wght' 500;
+  }
+}
+
+@keyframes text-shadow-follow {
+  0% {
+    text-shadow: 0 0 20px var(--pop);
+  }
+
+  100% {
+    text-shadow: 0 0 40px var(--pop), 0 0 60px var(--pop);
+  }
+}
+
+/* Scroll-Driven Typography Effects */
+@keyframes text-3d-flip {
+  from {
+    transform: perspective(1000px) rotateY(180deg) scale(0.8);
+    opacity: 0;
+    filter: blur(10px);
+  }
+
+  to {
+    transform: perspective(1000px) rotateY(0deg) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+@keyframes text-rotate-in {
+  from {
+    transform: perspective(1000px) rotateX(90deg) translateY(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: perspective(1000px) rotateX(0deg) translateY(0px);
+    opacity: 1;
+  }
+}
+
+@keyframes text-slide-left {
+  from {
+    transform: translateX(100px) rotateY(45deg);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0px) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes text-slide-right {
+  from {
+    transform: translateX(-100px) rotateY(-45deg);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0px) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes text-fade-up {
+  from {
+    transform: translateY(100px) translateZ(-100px);
+    opacity: 0;
+    filter: blur(10px);
+  }
+
+  to {
+    transform: translateY(0px) translateZ(0px);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+@keyframes text-fade-down {
+  from {
+    transform: translateY(-100px) translateZ(-100px);
+    opacity: 0;
+    filter: blur(10px);
+  }
+
+  to {
+    transform: translateY(0px) translateZ(0px);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+.text-unfold {
+  animation: text-unfold 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: bottom;
+}
+
+.letter-reveal {
+  animation: letter-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: center;
+}
+
+.weight-shift {
+  animation: weight-shift 2s ease-in-out infinite;
+}
+
+.text-shadow-follow {
+  animation: text-shadow-follow 3s ease-in-out infinite alternate;
+}
+
+.text-3d-flip {
+  animation: text-3d-flip 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: center;
+}
+
+.text-rotate-in {
+  animation: text-rotate-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: center;
+}
+
+.text-slide-left {
+  animation: text-slide-left 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.text-slide-right {
+  animation: text-slide-right 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.text-fade-up {
+  animation: text-fade-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.text-fade-down {
+  animation: text-fade-down 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Premium Spacing System (Golden Ratio) */
+.space-golden-sm {
+  margin: 1.618rem;
+}
+
+.space-golden-md {
+  margin: 2.618rem;
+}
+
+.space-golden-lg {
+  margin: 4.236rem;
+}
+
+.space-golden-xl {
+  margin: 6.854rem;
+}
+
+.p-golden-sm {
+  padding: 1.618rem;
+}
+
+.p-golden-md {
+  padding: 2.618rem;
+}
+
+.p-golden-lg {
+  padding: 4.236rem;
+}
+
+.p-golden-xl {
+  padding: 6.854rem;
+}
+
+/* Asymmetric Grid System (Magazine Layout) */
+.magazine-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(1rem, 3vw, 2rem);
+}
+
+.content-main {
+  grid-column: 1 / 8;
+}
+
+.content-sidebar {
+  grid-column: 9 / 13;
+}
+
+.content-overlap {
+  grid-column: 6 / 11;
+  margin-top: -4rem;
+}
+
+.content-feature {
+  grid-column: 2 / 12;
+}
+
+.content-breakout {
+  grid-column: 1 / 13;
+}
+
+.content-offset-left {
+  grid-column: 3 / 10;
+}
+
+.content-offset-right {
+  grid-column: 4 / 11;
+}
+
+/* Overlapping Elements */
+.overlap-up {
+  position: relative;
+  z-index: 10;
+  margin-top: -4rem;
+}
+
+.overlap-down {
+  position: relative;
+  z-index: 10;
+  margin-bottom: -4rem;
+}
+
+.overlap-left {
+  position: relative;
+  z-index: 10;
+  margin-left: -2rem;
+}
+
+.overlap-right {
+  position: relative;
+  z-index: 10;
+  margin-right: -2rem;
 }
 
 /* ============================================

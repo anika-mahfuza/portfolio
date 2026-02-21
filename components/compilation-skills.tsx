@@ -70,11 +70,12 @@ export function CompilationSkills() {
 
       {/* Content */}
       <div className="relative z-20 max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 py-20 lg:py-32">
-        {/* Section Header */}
+        {/* Restored Custom Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
           className="mb-20"
         >
           <div className="flex items-center gap-4 mb-6">

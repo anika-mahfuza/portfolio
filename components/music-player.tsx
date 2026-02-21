@@ -79,10 +79,10 @@ export function MusicPlayer({ isActive, onAudioRef }: MusicPlayerProps) {
           onClick={handlePlayClick}
           className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-3 px-6 py-3 backdrop-blur-md bg-[var(--surface)]/80 border border-[var(--border)] hover:border-[var(--pop)] hover:bg-[var(--pop)]/10 text-[var(--foreground)] rounded-full text-sm font-medium transition-all duration-500 hover:scale-105 shadow-xl group cursor-pointer"
         >
-          <div className="w-8 h-8 rounded-full bg-[var(--pop)] flex items-center justify-center group-hover:shadow-[var(--pop-glow)] transition-shadow duration-500">
+          <div className="w-8 h-8 rounded-full bg-[var(--pop)] flex items-center justify-center transition-shadow duration-500">
             <Play className="w-4 h-4 text-white ml-0.5" />
           </div>
-          <span className="tracking-widest uppercase font-mono text-xs text-[var(--foreground)]">Play Audio Experience</span>
+          <span className="tracking-widest uppercase font-mono text-xs text-[var(--foreground)]">Play Song</span>
         </button>
       )}
     </>

@@ -49,7 +49,9 @@ export default function Portfolio() {
             <a href="#" className="font-mono text-sm text-[var(--foreground)] tracking-wider">
               anika@dev:~$
             </a>
-            <ThemeToggle />
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </nav>
@@ -73,35 +75,41 @@ export default function Portfolio() {
         </div>
 
         {/* Cinematic Content Grid */}
-        <div className="relative z-10 w-full max-w-[1600px] mx-auto px-6 lg:px-12 pt-20 h-full flex flex-col justify-center">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-12 w-full">
+        <div className="relative z-10 w-full max-w-[1800px] mx-auto px-6 lg:px-16 pt-20 h-full flex flex-col justify-center">
+          <div className="magazine-grid items-center justify-between w-full">
 
             {/* Left: Typography Focus */}
-            <div className="flex-1 flex flex-col items-start justify-center pt-10 md:pt-0">
+            <div className="content-main flex flex-col items-start justify-center pt-10 md:pt-0">
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }} // smooth cinematic ease
                 className="mb-6 flex flex-col"
               >
-                <span className="text-label mb-4 block tracking-[0.2em] text-[var(--foreground-subtle)]">
+                <span className="text-label mb-6 block tracking-[0.2em] text-[var(--foreground-subtle)] letter-reveal">
                   Creative Developer & Security Researcher
                 </span>
 
-                <h1 className="text-display text-5xl sm:text-7xl md:text-8xl lg:text-[10rem] text-[var(--foreground)] m-0 p-0 transform -ml-1 whitespace-nowrap overflow-visible flex items-center">
+                <h1 className="text-hero text-[var(--foreground)] m-0 p-0 transform -ml-1 whitespace-nowrap overflow-visible flex items-center text-unfold">
                   <span className="inline-block min-w-[200px] sm:min-w-[300px] md:min-w-[360px] lg:min-w-[480px]">
                     <TextType
-                      text={["DEV.", "HACKER.", "CODER.", "CREATOR."]}
-                      typingSpeed={60}
-                      deletingSpeed={30}
-                      pauseDuration={2000}
+                      text={["DEV", "HACKER", "CODER", "CREATOR"]}
+                      typingSpeed={150}
+                      deletingSpeed={60}
+                      pauseDuration={3500}
                       cursorBlinkDuration={0.4}
                       cursorCharacter="|"
+                      textColors={["var(--pop)", "var(--foreground)", "var(--accent)", "var(--pop)"]}
+                      variableSpeed={{ min: 60, max: 100 }}
+                      letterByLetter={true}
+                      letterRevealDelay={0.15}
+                      weightAnimation={true}
+                      mouseInteraction={false}
                     />
                   </span>
                 </h1>
-                <h1 className="text-display text-5xl sm:text-7xl md:text-8xl lg:text-[10rem] text-[var(--foreground)] m-0 p-0 transform -ml-1 flex items-center gap-4">
-                  MODE<span className="text-[var(--pop)] inline-block w-4 h-4 md:w-8 md:h-8 rounded-full bg-[var(--pop)] shadow-[var(--pop-glow)] mt-2"></span>
+                <h1 className="text-hero text-[var(--foreground)] m-0 p-0 transform -ml-1 flex items-center gap-4 text-unfold">
+                  MODE
                 </h1>
               </motion.div>
 
@@ -129,7 +137,7 @@ export default function Portfolio() {
             </div>
 
             {/* Right: Immersive Portrait & Action */}
-            <div className="relative w-full md:w-auto flex flex-col items-center md:items-end justify-center mt-8 md:mt-0">
+            <div className="content-sidebar relative flex flex-col items-center md:items-end justify-center mt-8 md:mt-0 overlap-up">
               <ParallaxScale>
                 <div className="flex flex-col items-center">
                   <motion.div
@@ -139,7 +147,7 @@ export default function Portfolio() {
                     className="relative group w-max"
                   >
                     {/* Glitch/Hover Container for the image */}
-                    <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-[400px] lg:h-[400px] overflow-hidden grayscale contrast-[1.2] group-hover:grayscale-0 transition-all duration-700 ease-out border border-[var(--border)]">
+                    <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-[400px] lg:h-[400px] overflow-hidden grayscale contrast-[1.2] group-hover:grayscale-0 transition-all duration-700 ease-out">
                       <img
                         src="/profile.png"
                         alt="Anika Mahfuza"
@@ -175,7 +183,7 @@ export default function Portfolio() {
                     transition={{ duration: 1, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
                     className="w-full flex justify-center mt-12 md:mt-16 z-20 relative pointer-events-none"
                   >
-                    <h2 className="text-display text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] text-[var(--foreground)] tracking-tight drop-shadow-2xl uppercase">
+                    <h2 className="text-display-enhanced text-[var(--foreground)] tracking-tight drop-shadow-2xl uppercase">
                       ANIKA MAHFUZA
                     </h2>
                   </motion.div>
@@ -184,17 +192,6 @@ export default function Portfolio() {
             </div>
 
           </div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2, duration: 1 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          >
-            <span className="text-[10px] font-mono tracking-[0.2em] text-[var(--foreground-subtle)] uppercase">Scroll</span>
-            <div className="w-[1px] h-12 bg-gradient-to-b from-[var(--pop)] to-transparent opacity-50"></div>
-          </motion.div>
         </div>
       </motion.section>
 
