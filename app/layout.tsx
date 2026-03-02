@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Manrope, JetBrains_Mono, Space_Grotesk } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ThemeProvider } from "next-themes"
 import { SmoothScroll } from "@/components/smooth-scroll"
 
@@ -57,6 +58,7 @@ export default function RootLayout({
           </SmoothScroll>
         </ThemeProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
