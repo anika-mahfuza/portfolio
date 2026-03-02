@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { useTheme } from "next-themes"
+import { Preloader } from "@/components/preloader"
 import { MusicPlayer } from "@/components/music-player"
 import { LyricsDisplay } from "@/components/lyrics-display"
 import { AudioControls } from "@/components/audio-controls"
@@ -21,6 +22,7 @@ import { AnimatedQuote } from "@/components/animated-quote"
 import { TextType } from "@/components/text-type"
 
 export default function Portfolio() {
+  const [isLoading, setIsLoading] = useState(true)
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null)
   const [mounted, setMounted] = useState(false)
   const { resolvedTheme } = useTheme()
@@ -28,6 +30,10 @@ export default function Portfolio() {
 
   useEffect(() => {
     setMounted(true)
+  }, [])
+
+  const handlePreloaderComplete = useCallback(() => {
+    setIsLoading(false)
   }, [])
 
   const { scrollYProgress } = useScroll()
@@ -38,7 +44,11 @@ export default function Portfolio() {
   if (!mounted) return null
 
   return (
-    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] overflow-x-hidden">
+    <>
+      {/* Preloader */}
+      {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
+
+      <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] overflow-x-hidden">
       <MusicPlayer isActive={true} onAudioRef={setAudioElement} />
       <AudioControls audioElement={audioElement} isVisible={true} />
       <LyricsDisplay audioElement={audioElement} isVisible={true} />
@@ -93,7 +103,7 @@ export default function Portfolio() {
                 <h1 className="text-hero text-[var(--foreground)] m-0 p-0 transform -ml-1 whitespace-nowrap overflow-visible flex items-center text-unfold">
                   <span className="inline-block min-w-[200px] sm:min-w-[300px] md:min-w-[360px] lg:min-w-[480px]">
                     <TextType
-                      text={["DEV", "HACKER", "CODER", "CREATOR"]}
+                      text={["RESEARCH", "EXPLOIT", "PATCH", "DEPLOY"]}
                       typingSpeed={150}
                       deletingSpeed={60}
                       pauseDuration={3500}
@@ -175,14 +185,26 @@ export default function Portfolio() {
                     </div>
                   </motion.div>
 
-                  {/* Huge Name Display Below Image */}
+                  {/* Huge Name Display Below Image - Outline/Stroke Effect */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
                     className="w-full flex justify-center mt-12 md:mt-16 z-20 relative pointer-events-none"
                   >
-                    <h2 className="text-display-enhanced text-[var(--foreground)] tracking-tight drop-shadow-2xl uppercase">
+                    {/* Background layer - outline/stroke only */}
+                    <h2
+                      className="absolute text-display-enhanced tracking-tight uppercase"
+                      style={{
+                        WebkitTextStroke: isDark ? "1px rgba(255,255,255,0.3)" : "1px rgba(0,0,0,0.3)",
+                        color: "transparent",
+                        transform: "translate(4px, 4px)",
+                      }}
+                    >
+                      ANIKA MAHFUZA
+                    </h2>
+                    {/* Foreground layer - solid text */}
+                    <h2 className="text-display-enhanced text-[var(--foreground)] tracking-tight drop-shadow-2xl uppercase relative">
                       ANIKA MAHFUZA
                     </h2>
                   </motion.div>
@@ -350,5 +372,6 @@ export default function Portfolio() {
         </div>
       </footer>
     </main>
+    </>
   )
 }
