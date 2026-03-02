@@ -87,7 +87,7 @@ export default function Portfolio() {
                 className="mb-6 flex flex-col"
               >
                 <span className="text-label mb-6 block tracking-[0.2em] text-[var(--foreground-subtle)] letter-reveal">
-                  Creative Developer & Security Researcher
+                  Developer & Analyst
                 </span>
 
                 <h1 className="text-hero text-[var(--foreground)] m-0 p-0 transform -ml-1 whitespace-nowrap overflow-visible flex items-center text-unfold">
@@ -119,7 +119,7 @@ export default function Portfolio() {
                 transition={{ duration: 1, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className="text-lg md:text-xl text-[var(--foreground-muted)] max-w-lg leading-relaxed mb-10 font-mono tracking-tight"
               >
-                Building low-level systems, breaking them down, and crafting premium immersive digital experiences.
+                Building low-level systems, mastering the Windows API, and crafting high-performance software.
               </motion.p>
 
               <motion.div
@@ -129,7 +129,7 @@ export default function Portfolio() {
                 className="flex items-center gap-4"
               >
                 <TechTagGroup
-                  tags={["C++", "C#", "React", "Security"]}
+                  tags={["C++", "C#", "Web", "Security"]}
                   activeTag="C++"
                   className="mb-0"
                 />
@@ -147,13 +147,12 @@ export default function Portfolio() {
                     className="relative group w-max"
                   >
                     {/* Glitch/Hover Container for the image */}
-                    <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-[400px] lg:h-[400px] overflow-hidden grayscale contrast-[1.2] group-hover:grayscale-0 transition-all duration-700 ease-out">
+                    <div className="relative w-40 h-[250px] md:w-48 md:h-[300px] lg:w-56 lg:h-[350px] overflow-hidden grayscale contrast-[1.2] group-hover:grayscale-0 transition-all duration-700 ease-out">
                       <img
                         src="/profile.png"
                         alt="Anika Mahfuza"
                         className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700 ease-out mix-blend-luminosity opacity-80"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] via-transparent to-transparent opacity-80" />
                     </div>
 
                     {/* Floating Action Buttons overlapping image */}
@@ -249,7 +248,7 @@ export default function Portfolio() {
               </motion.div>
 
               <AnimatedQuote
-                quote="Vibe coders are next generation copy pasters"
+                quote="Vibe coders are the next generation copy pasters"
                 author="Anika Mahfuza"
               />
             </div>

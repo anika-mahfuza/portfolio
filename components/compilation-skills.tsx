@@ -18,8 +18,8 @@ interface Skill {
 const skills: Skill[] = [
   { name: "C++", level: "Expert", description: "Systems programming & performance optimization", from: "./core/systems", lineNumber: 1 },
   { name: "C#", level: "Expert", description: "Application development & architecture", from: "./core/applications", lineNumber: 2 },
-  { name: "Python", level: "Advanced", description: "Automation, scripting & tooling", from: "./automation/scripts", lineNumber: 3 },
-  { name: "TypeScript", level: "Advanced", description: "Modern web development & type safety", from: "./web/frontend", lineNumber: 4 },
+  { name: "Python", level: "Advanced", description: "Automation, scripts & tools", from: "./automation/scripts", lineNumber: 3 },
+  { name: "TypeScript", level: "Advanced", description: "Modern web development", from: "./web/frontend", lineNumber: 4 },
   { name: "Malware", level: "Intermediate", description: "Reverse engineering & security analysis", from: "./security/research", lineNumber: 5 },
 ]
 
@@ -48,7 +48,7 @@ export function CompilationSkills() {
       {/* Waves Background */}
       <div className="absolute inset-0 z-0">
         <Waves
-          lineColor={isDark ? "rgba(230, 57, 70, 0.15)" : "rgba(220, 38, 38, 0.2)"}
+          lineColor={isDark ? "rgba(230, 57, 70, 0.1)" : "rgba(220, 38, 38, 0.2)"}
           backgroundColor="transparent"
           waveSpeedX={0.0125}
           waveSpeedY={0.005}
@@ -60,7 +60,7 @@ export function CompilationSkills() {
           tension={0.005}
           maxCursorMove={0}
           style={{
-            opacity: isDark ? 0.35 : 0.6,
+            opacity: isDark ? 0.7 : 0.6,
             mixBlendMode: "normal"
           }}
         />
@@ -199,7 +199,7 @@ export function CompilationSkills() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.6 }}
-              className="mt-8 pt-6 border-t border-[var(--border)]/50 px-4 sm:px-8"
+              className="mt-8 pt-6 px-4 sm:px-8"
             >
               <div className="flex items-start gap-4 sm:gap-6 px-2 sm:px-4">
                 <span className="font-mono text-sm text-[var(--foreground-subtle)] w-6 sm:w-8 text-right">
