@@ -50,7 +50,7 @@ export const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
     const baseStyles = "inline-flex items-center justify-center gap-3 px-8 py-4 font-medium text-sm uppercase tracking-wide transition-colors duration-300 rounded-lg"
     
     const variants = {
-      primary: "bg-[var(--pop)] text-white hover:bg-[var(--foreground)]",
+      primary: "bg-[var(--pop)] text-white hover:bg-white hover:text-black",
       secondary: "border border-[var(--border-strong)] text-[var(--foreground)] hover:bg-[var(--foreground)] hover:text-[var(--background)]"
     }
 
