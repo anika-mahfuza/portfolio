@@ -270,7 +270,7 @@ export default function Portfolio() {
               </motion.div>
 
               <AnimatedQuote
-                quote="Vibe coders are the next generation copy pasters"
+                quote="Vibe coders are the next generation, copy pasters"
                 author="Anika Mahfuza"
               />
             </div>

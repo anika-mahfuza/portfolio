@@ -31,7 +31,7 @@ export function AnimatedQuote({ quote, author, className = "" }: AnimatedQuotePr
         
         <blockquote className="relative">
           <p className="text-2xl lg:text-4xl text-heading text-[var(--foreground)] leading-snug mb-6">
-            "{quote}"
+            &#x201C;{quote}&#x201D;
           </p>
           <footer className="text-label">
             — {author}
