@@ -47,7 +47,7 @@ export function CompilationSkills() {
     >
       {/* Grainy Gradient Background */}
       <div className="absolute inset-0 z-0">
-        {mounted && <SkillsGrainBackground />}
+        <SkillsGrainBackground />
       </div>
 
       <SectionNumber number="02" />

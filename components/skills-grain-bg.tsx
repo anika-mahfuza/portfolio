@@ -1,19 +1,13 @@
 "use client"
 
-import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 
 export function SkillsGrainBackground() {
-  const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  if (!mounted) return null
-
-  const isDark = resolvedTheme === "dark"
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -55,61 +49,63 @@ export function SkillsGrainBackground() {
         </defs>
       </svg>
 
-      {/* Gradient Layers */}
+      {/* Gradient Layers - theme colors via CSS variables */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 grain-layer"
         style={{
           filter: "url(#skills-grain)",
-          opacity: isDark ? 0.4 : 0.3,
         }}
       >
         {/* Blob 1 - Top Left */}
         <div
-          className="absolute rounded-full"
+          className="absolute rounded-full grain-blob-1"
           style={{
             width: "60%",
             height: "60%",
             top: "-10%",
             left: "-10%",
-            background: isDark
-              ? "radial-gradient(circle, rgba(255,42,61,0.35) 0%, rgba(255,42,61,0.1) 40%, transparent 70%)"
-              : "radial-gradient(circle, rgba(255,71,87,0.3) 0%, rgba(255,71,87,0.08) 40%, transparent 70%)",
-            animation: "grainDrift1 25s ease-in-out infinite",
           }}
         />
 
         {/* Blob 2 - Bottom Right */}
         <div
-          className="absolute rounded-full"
+          className="absolute rounded-full grain-blob-2"
           style={{
             width: "50%",
             height: "50%",
             bottom: "-5%",
             right: "-5%",
-            background: isDark
-              ? "radial-gradient(circle, rgba(231,76,60,0.3) 0%, rgba(231,76,60,0.08) 45%, transparent 70%)"
-              : "radial-gradient(circle, rgba(255,107,107,0.25) 0%, rgba(255,107,107,0.06) 45%, transparent 70%)",
-            animation: "grainDrift2 30s ease-in-out infinite",
           }}
         />
 
         {/* Blob 3 - Center */}
         <div
-          className="absolute rounded-full"
+          className="absolute rounded-full grain-blob-3"
           style={{
             width: "45%",
             height: "45%",
             top: "30%",
             left: "30%",
-            background: isDark
-              ? "radial-gradient(circle, rgba(255,42,61,0.2) 0%, rgba(255,42,61,0.05) 50%, transparent 70%)"
-              : "radial-gradient(circle, rgba(255,71,87,0.18) 0%, rgba(255,71,87,0.04) 50%, transparent 70%)",
-            animation: "grainDrift3 22s ease-in-out infinite",
           }}
         />
       </div>
 
       <style>{`
+        .grain-layer {
+          opacity: 0.35;
+        }
+        .grain-blob-1 {
+          background: radial-gradient(circle, var(--pop) 0%, rgba(255,42,61,0.1) 40%, transparent 70%);
+          animation: grainDrift1 25s ease-in-out infinite;
+        }
+        .grain-blob-2 {
+          background: radial-gradient(circle, var(--pop-cool) 0%, var(--pop-cool) 0%, transparent 70%);
+          animation: grainDrift2 30s ease-in-out infinite;
+        }
+        .grain-blob-3 {
+          background: radial-gradient(circle, var(--pop-warm) 0%, transparent 50%);
+          animation: grainDrift3 22s ease-in-out infinite;
+        }
         @keyframes grainDrift1 {
           0%, 100% { transform: translate(0, 0) scale(1); }
           33% { transform: translate(5%, 3%) scale(1.05); }
