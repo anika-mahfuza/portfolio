@@ -4,8 +4,8 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "next-themes"
-import { Waves } from "@/components/react-bits"
 import { SectionNumber } from "@/components/section-number"
+import { SkillsGrainBackground } from "@/components/skills-grain-bg"
 
 interface Skill {
   name: string
@@ -45,25 +45,9 @@ export function CompilationSkills() {
       id="skills"
       className="relative border-t border-[var(--border)] bg-[var(--background)] min-h-screen overflow-hidden"
     >
-      {/* Waves Background */}
+      {/* Grainy Gradient Background */}
       <div className="absolute inset-0 z-0">
-        <Waves
-          lineColor={isDark ? "rgba(230, 57, 70, 0.1)" : "rgba(220, 38, 38, 0.2)"}
-          backgroundColor="transparent"
-          waveSpeedX={0.0125}
-          waveSpeedY={0.005}
-          waveAmpX={32}
-          waveAmpY={16}
-          xGap={10}
-          yGap={32}
-          friction={0.925}
-          tension={0.005}
-          maxCursorMove={0}
-          style={{
-            opacity: isDark ? 0.7 : 0.6,
-            mixBlendMode: "normal"
-          }}
-        />
+        {mounted && <SkillsGrainBackground />}
       </div>
 
       <SectionNumber number="02" />
