@@ -17,7 +17,13 @@ export function LyricsDisplay({ audioElement, isVisible }: LyricsDisplayProps) {
     const [isMinimized, setIsMinimized] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [barHeights, setBarHeights] = useState<number[]>([])
     const lyricsContainerRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        // Generate stable random heights for error state bars
+        setBarHeights(Array.from({ length: 6 }, () => 8 + Math.random() * 10))
+    }, [])
 
     useEffect(() => {
         async function loadLyrics() {
@@ -184,7 +190,7 @@ export function LyricsDisplay({ audioElement, isVisible }: LyricsDisplayProps) {
                                             <div
                                                 key={i}
                                                 className="w-0.5 bg-[var(--pop)] animate-pulse"
-                                                style={{ height: `${8 + Math.random() * 10}px`, animationDelay: `${i * 100}ms` }}
+                                                style={{ height: `${barHeights[i] || 8}px`, animationDelay: `${i * 100}ms` }}
                                             />
                                         ))}
                                     </div>
