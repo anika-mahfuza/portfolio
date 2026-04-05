@@ -11,9 +11,9 @@ import { DiscordIcon, ExternalLinkIcon } from "@/components/custom-icons"
 import { VisitCounter } from "@/components/visit-counter"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ParallaxScale } from "@/components/parallax"
+import { PretextVideoBand } from "@/components/pretext-video-band"
 import { TextReveal } from "@/components/text-reveal"
 import { CompilationSkills } from "@/components/compilation-skills"
-import { GreenScreenVideo } from "@/components/green-screen-video"
 import { LightRays, Threads, Aurora } from "@/components/react-bits"
 import { ReactBitsShowcase } from "@/components/react-bits-showcase"
 import { LinkButton, IconButton } from "@/components/button"
@@ -21,6 +21,63 @@ import { TechTagGroup } from "@/components/tech-tag"
 import { SectionNumber } from "@/components/section-number"
 import { AnimatedQuote } from "@/components/animated-quote"
 import { TextType } from "@/components/text-type"
+
+const PRETEXT_VIDEO_WORDS = [
+  "WIN32",
+  "INTERNALS",
+  "REVERSE",
+  "ENGINEERING",
+  "NATIVE",
+  "TOOLING",
+  "BINARY",
+  "DIFFING",
+  "DEBUGGER",
+  "TRACES",
+  "MEMORY",
+  "FORENSICS",
+  "KERNEL",
+  "SURFACES",
+  "API",
+  "DETOURS",
+  "THREAT",
+  "TELEMETRY",
+  "PROTOCOL",
+  "DECODING",
+  "STACK",
+  "UNWINDING",
+  "PERFORMANCE",
+  "TUNING",
+  "PATCH",
+  "ANALYSIS",
+  "CRASH",
+  "SIGNATURES",
+  "EXPLOIT",
+  "RESEARCH",
+  "DRIVER",
+  "BEHAVIOR",
+  "REGISTRY",
+  "ARTIFACTS",
+  "SYMBOL",
+  "CHASING",
+  "SYSTEMS",
+  "PROGRAMMING",
+  "MALWARE",
+  "TRIAGE",
+  "C++",
+  "RUNTIME",
+  "C#",
+  "ARCHITECTURE",
+  "WEB",
+  "DECOMPILER",
+  "NOTES",
+]
+
+const PRETEXT_VIDEO_COPY = Array.from({ length: 18 }, (_, round) => {
+  return PRETEXT_VIDEO_WORDS.map((_, index) => {
+    const word = PRETEXT_VIDEO_WORDS[(index + round) % PRETEXT_VIDEO_WORDS.length]
+    return (index + round) % 4 === 0 ? word.toLowerCase() : word
+  }).join("\n")
+}).join("\n")
 
 export default function Portfolio() {
   const [isLoading, setIsLoading] = useState(true)
@@ -217,22 +274,10 @@ export default function Portfolio() {
         </div>
       </motion.section>
 
-      <section className="bg-black py-12 md:py-16">
-        <div className="mx-auto flex max-w-7xl justify-center px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.35 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full max-w-[1100px]"
-          >
-            <GreenScreenVideo
-              src="/bg.webm"
-              className="w-full"
-            />
-          </motion.div>
-        </div>
-      </section>
+      <PretextVideoBand
+        src="/bg.webm"
+        text={PRETEXT_VIDEO_COPY}
+      />
 
       <section id="about" className="relative section-padding border-t border-[var(--border)] overflow-hidden">
         <div className="absolute inset-0 z-0" style={{ opacity: isDark ? 0.3 : 0.35 }}>
