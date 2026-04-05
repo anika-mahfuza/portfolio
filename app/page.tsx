@@ -13,7 +13,8 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { ParallaxScale } from "@/components/parallax"
 import { TextReveal } from "@/components/text-reveal"
 import { CompilationSkills } from "@/components/compilation-skills"
-import { LightRays, BlurText, Threads, Aurora } from "@/components/react-bits"
+import { GreenScreenVideo } from "@/components/green-screen-video"
+import { LightRays, Threads, Aurora } from "@/components/react-bits"
 import { ReactBitsShowcase } from "@/components/react-bits-showcase"
 import { LinkButton, IconButton } from "@/components/button"
 import { TechTagGroup } from "@/components/tech-tag"
@@ -149,7 +150,7 @@ export default function Portfolio() {
             {/* Right: Immersive Portrait & Action */}
             <div className="content-sidebar relative flex flex-col items-center md:items-end justify-center mt-8 md:mt-0 overlap-up">
               <ParallaxScale>
-                <div className="flex flex-col items-center">
+                <div className="relative z-10 flex flex-col items-center">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
                     animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
@@ -215,6 +216,23 @@ export default function Portfolio() {
           </div>
         </div>
       </motion.section>
+
+      <section className="bg-black py-12 md:py-16">
+        <div className="mx-auto flex max-w-7xl justify-center px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full max-w-[1100px]"
+          >
+            <GreenScreenVideo
+              src="/bg.webm"
+              className="w-full"
+            />
+          </motion.div>
+        </div>
+      </section>
 
       <section id="about" className="relative section-padding border-t border-[var(--border)] overflow-hidden">
         <div className="absolute inset-0 z-0" style={{ opacity: isDark ? 0.3 : 0.35 }}>
