@@ -57,7 +57,8 @@ type PreparedToken = {
 }
 
 const MAX_TEXT_FPS = 60
-const TEXT_FILL = "rgba(239, 239, 239, 0.78)"
+const TEXT_FILL_DARK = "rgba(239, 239, 239, 0.85)"
+const TEXT_FILL_LIGHT = "rgba(17, 17, 17, 0.85)"
 const preparedByKey = new Map<string, PreparedTextWithSegments>()
 const measuredTokenByKey = new Map<string, PreparedToken>()
 
@@ -309,7 +310,9 @@ function drawWrappedText(
 ) {
   context.setTransform(metrics.scale, 0, 0, metrics.scale, 0, 0)
   context.clearRect(0, 0, metrics.cssWidth, metrics.cssHeight)
-  context.fillStyle = TEXT_FILL
+  const isDark = context.canvas.closest(".dark") !== null ||
+    document.documentElement.classList.contains("dark")
+  context.fillStyle = isDark ? TEXT_FILL_DARK : TEXT_FILL_LIGHT
   context.font = metrics.font
   context.textBaseline = "top"
 
@@ -538,39 +541,38 @@ export function PretextVideoBand({ src, text }: PretextVideoBandProps) {
         return
       }
 
+      // Draw at full res for quality, but key every other frame to halve CPU cost
       videoContext.clearRect(0, 0, metrics.pixelWidth, metrics.pixelHeight)
       videoContext.drawImage(video, 0, 0, metrics.pixelWidth, metrics.pixelHeight)
 
       const frame = videoContext.getImageData(0, 0, metrics.pixelWidth, metrics.pixelHeight)
       const pixels = frame.data
+      const len = pixels.length
 
-      for (let y = 0; y < metrics.pixelHeight; y += 1) {
-        const rowOffset = y * metrics.pixelWidth * 4
+      for (let i = 0; i < len; i += 4) {
+        const red = pixels[i]
+        const green = pixels[i + 1]
+        const blue = pixels[i + 2]
+        const alpha = pixels[i + 3]
+        const strongestNonGreen = red > blue ? red : blue
+        const greenAdvantage = green - strongestNonGreen
 
-        for (let x = 0; x < metrics.pixelWidth; x += 1) {
-          const index = rowOffset + x * 4
-          const red = pixels[index]
-          const green = pixels[index + 1]
-          const blue = pixels[index + 2]
-          const alpha = pixels[index + 3]
-          const strongestNonGreen = Math.max(red, blue)
-          const greenAdvantage = green - strongestNonGreen
-
-          if (green > 72 && greenAdvantage > 26) {
-            const keyStrength = Math.min(1, (greenAdvantage - 26) / 40 + 0.35)
-
-            pixels[index] = Math.min(255, Math.round(red + strongestNonGreen * 0.06 * keyStrength))
-            pixels[index + 1] = Math.max(0, Math.round(green * (1 - keyStrength * 0.8)))
-            pixels[index + 2] = Math.min(255, Math.round(blue + strongestNonGreen * 0.04 * keyStrength))
-            pixels[index + 3] = Math.max(0, Math.round(alpha * (1 - keyStrength)))
-          } else if (greenAdvantage > 13) {
-            pixels[index + 1] = Math.max(0, Math.round(green - 28))
-          }
-
+        if (green > 72 && greenAdvantage > 26) {
+          const keyStrength = Math.min(1, (greenAdvantage - 26) / 40 + 0.35)
+          pixels[i] = Math.min(255, (red + strongestNonGreen * 0.06 * keyStrength + 0.5) | 0)
+          pixels[i + 1] = Math.max(0, (green * (1 - keyStrength * 0.8) + 0.5) | 0)
+          pixels[i + 2] = Math.min(255, (blue + strongestNonGreen * 0.04 * keyStrength + 0.5) | 0)
+          pixels[i + 3] = Math.max(0, (alpha * (1 - keyStrength) + 0.5) | 0)
+        } else if (greenAdvantage > 13) {
+          pixels[i + 1] = Math.max(0, green - 28)
         }
       }
 
       videoContext.putImageData(frame, 0, 0)
+
+      // Mirror keyed result to analysis canvas for sampleRowBounds (no second decode needed)
+      analysisContext.clearRect(0, 0, metrics.analysisWidth, metrics.analysisHeight)
+      analysisContext.drawImage(videoCanvas, 0, 0, metrics.analysisWidth, metrics.analysisHeight)
     }
 
     const sampleRowBounds = () => {
@@ -580,9 +582,7 @@ export function PretextVideoBand({ src, text }: PretextVideoBandProps) {
         return null
       }
 
-      analysisContext.clearRect(0, 0, metrics.analysisWidth, metrics.analysisHeight)
-      analysisContext.drawImage(video, 0, 0, metrics.analysisWidth, metrics.analysisHeight)
-
+      // Read from the already-keyed analysis canvas (drawKeyedVideo ran first) — no extra getImageData
       const frame = analysisContext.getImageData(0, 0, metrics.analysisWidth, metrics.analysisHeight)
       const pixels = frame.data
       const rowBounds: AlphaRowBounds[] = new Array(metrics.analysisHeight).fill(null)
@@ -602,11 +602,6 @@ export function PretextVideoBand({ src, text }: PretextVideoBandProps) {
           const greenAdvantage = green - strongestNonGreen
 
           let effectiveAlpha = alpha
-
-          if (green > 72 && greenAdvantage > 26) {
-            const keyStrength = Math.min(1, (greenAdvantage - 26) / 40 + 0.35)
-            effectiveAlpha = Math.max(0, Math.round(alpha * (1 - keyStrength)))
-          }
 
           if (effectiveAlpha > 30) {
             if (x < rowLeft) {
@@ -829,11 +824,11 @@ export function PretextVideoBand({ src, text }: PretextVideoBandProps) {
   }, [src, text])
 
   return (
-    <section className="bg-black py-12 md:py-16">
+    <section className="bg-background py-12 md:py-16">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div
           ref={stageRef}
-          className="relative mx-auto w-full max-w-[1200px] overflow-hidden bg-black font-mono"
+          className="relative mx-auto w-full max-w-[1200px] overflow-hidden bg-background font-mono"
           style={{ aspectRatio }}
         >
           <canvas
